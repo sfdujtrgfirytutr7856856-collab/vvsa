@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Lokale Profiler</title>
+    
+    <style>
+        /* =========================================
+           FACEBOOK CLONE UI - 100% RESPONSIVE GRID
+           ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #1c1e21; }
+        
+        /* FB NAV BAR */
+        .fb-nav { background: #ffffff; height: 56px; display: flex; align-items: center; padding: 0 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .fb-logo { font-size: 24px; font-weight: bold; color: #1877f2; text-decoration: none; letter-spacing: -1px; }
+        .nav-search { background: #f0f2f5; border-radius: 50px; padding: 8px 15px; margin-left: 10px; color: #65676b; font-size: 14px; width: 100%; max-width: 250px; }
+
+        /* HOMEPAGE GRID - FIXED FOR ALL 36 PROFILES */
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 15px; color: #050505; }
+        
+        .profile-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 12px; 
+            justify-content: flex-start;
+        }
+        
+        .user-card { 
+            background: #fff; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2); 
+            cursor: pointer; 
+            border: 1px solid #ddd;
+            width: calc(25% - 9px); /* 4 columns on desktop */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-card img { width: 100%; height: 160px; object-fit: cover; background: #e4e6eb; }
+        .user-card-info { padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+        .user-card-name { font-weight: 600; font-size: 14px; color: #050505; margin-bottom: 8px; }
+        .user-card-btn { background: #e7f3ff; color: #1877f2; border: none; padding: 8px; width: 100%; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+
+        /* MOBILE VIEW FIXED - 2 COLUMNS GUARANTEED */
+        @media (max-width: 600px) {
+            .user-card { width: calc(50% - 6px); } /* 2 columns on mobile */
+            .user-card img { height: 140px; }
+        }
+
+        /* FULLSCREEN PROFILE MODAL */
+        .profile-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f2f5; z-index: 1000; overflow-y: auto; }
+        .back-btn { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: #fff; border: none; padding: 8px 15px; border-radius: 20px; z-index: 1010; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); }
+        
+        /* PROFILE HEADER */
+        .profile-top { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1); padding-bottom: 15px; }
+        .cover-photo { width: 100%; height: 200px; background: #333 url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop') center/cover; position: relative; }
+        .profile-avatar-wrapper { width: 140px; height: 140px; border-radius: 50%; border: 4px solid #fff; margin: -70px auto 0; position: relative; z-index: 2; background: #fff; }
+        .profile-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .profile-name { text-align: center; font-size: 24px; font-weight: 700; margin-top: 10px; color: #050505; }
+        .profile-bio { text-align: center; color: #65676b; font-size: 14px; margin: 5px 20px; }
+        
+        .fb-action-btns { display: flex; gap: 10px; justify-content: center; margin-top: 15px; padding: 0 20px; }
+        .fb-btn { padding: 8px 0; border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer; flex: 1; text-align: center; text-decoration: none; }
+        .btn-add { background: #1877f2; color: #fff; }
+        .btn-msg { background: #e4e6eb; color: #050505; }
+
+        /* POST TIMELINE */
+        .timeline { max-width: 600px; margin: 15px auto; padding: 0 10px; padding-bottom: 50px; }
+        .post { background: #fff; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); overflow: hidden; }
+        .post-header { display: flex; align-items: center; padding: 12px; }
+        .post-header img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover; }
+        .post-author { font-weight: 600; font-size: 15px; color: #050505; display: block; }
+        .post-time { font-size: 12px; color: #65676b; display: flex; align-items: center; gap: 4px; }
+        .post-text { padding: 0 12px 10px; font-size: 15px; color: #050505; line-height: 1.4; }
+        
+        /* THE CONTENT LOCKER TRICK */
+        .locked-content { position: relative; width: 100%; height: 350px; background: #000; display: flex; justify-content: center; align-items: center; cursor: pointer; text-decoration: none; overflow: hidden; }
+        .locked-content img { width: 100%; height: 100%; object-fit: cover; filter: blur(20px) brightness(0.6); transform: scale(1.1); transition: filter 0.3s; }
+        .locked-content:hover img { filter: blur(25px) brightness(0.5); }
+        .lock-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; padding: 20px; text-align: center; }
+        .lock-icon { font-size: 45px; margin-bottom: 10px; }
+        .lock-title { color: #fff; font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .lock-desc { color: #ddd; font-size: 13px; margin-bottom: 15px; max-width: 90%; }
+        .unlock-btn { background: #ff2a5f; color: #fff; padding: 10px 20px; border-radius: 6px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        
+        .post-stats { padding: 10px 12px; border-bottom: 1px solid #ced0d4; font-size: 13px; color: #65676b; display: flex; justify-content: space-between; }
+        .post-actions { display: flex; justify-content: space-between; padding: 4px 12px; }
+        .action-btn { flex: 1; text-align: center; padding: 8px 0; color: #65676b; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="fb-nav">
+        <a href="#" class="fb-logo">facebook</a>
+        <div class="nav-search">🔍 Søg i Danmark...</div>
+    </div>
+
+    <div class="container">
+        <div class="section-title">Personer, du måske kender (Danmark)</div>
+        <div class="profile-grid" id="homepageGrid"></div>
+    </div>
+
+    <div id="profileModal" class="profile-modal">
+        <button class="back-btn" onclick="closeProfile()">⬅ Tilbage</button>
+        
+        <div class="profile-top">
+            <div class="cover-photo"></div>
+            <div class="profile-avatar-wrapper">
+                <img src="" id="pAvatar" class="profile-avatar">
+            </div>
+            <h1 class="profile-name"><span id="pName">Name</span></h1>
+            <p class="profile-bio">📍 København, Danmark • 📸 Content Creator • 🔞 Kun 18+</p>
+            
+            <div class="fb-action-btns">
+                <a href="https://t.taffizerq.com/719iel" target="_blank" class="fb-btn btn-add">🔒 Lås VIP Op</a>
+                <a href="https://t.taffizerq.com/719iel" target="_blank" class="fb-btn btn-msg">💬 Send Besked</a>
+            </div>
+        </div>
+
+        <div class="timeline" id="timelineContainer">
+            </div>
+    </div>
+
+    <script>
+        // EXACTLY 36 IMAGES PROVIDED BY YOU
+        const allImages = [
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/zUhgoTkN_400x400.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/post94873717708903160IMG_2631.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/photo_2026-02-01_19-40-54.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faff59e27102.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafd6212320b.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafcae692d2c.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafc930da7d6.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafbe3fc1960.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafb9e5a7fc5.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fafb12fc3117.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faf934c26dee.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faf445819aa1.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faf376edf756.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faf17e56f793.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faf12db448e5.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faeff2b47920.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faee27525158.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faece2309a62.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5faead4ae3571.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images_5fae8e424e078.jpeg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images4.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/images%201.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/ZUQYQVFNR3-thumb.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/Z5CJD4WFFK.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/WZT9ONOAVQ.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/T4APYLQ1UD.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/QYVIU1LTLK-thumb.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/GsKNHUXXsAA_z4C.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/HE7LupIXEAA2xnS.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/EhU-uxVU4AEV_-n.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/Edtlj7HUcAERuPf.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/C2CDnINUsAArk4M.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/918ef2fd-89ae-4629-97c1-46aed0bcf444.webp?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/8cd9b917-2a23-4f57-84a3-bf06bc59ff04.webp?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true",
+            "https://github.com/gdjg536ydiv-bot/affizerp/blob/main/15.jpg?raw=true"
+        ];
+
+        // 36 Danish Names corresponding to each image
+        const danishNames = [
+            "Emma Nielsen", "Ida Jensen", "Clara Hansen", "Sofia Pedersen", "Freja Andersen", 
+            "Josefine Larsen", "Alma Sørensen", "Ella Rasmussen", "Anna Jørgensen", "Isabella Petersen", 
+            "Laura Madsen", "Mathilde Kristensen", "Lærke Olsen", "Caroline Thomsen", "Victoria Christiansen",
+            "Maja Poulsen", "Naja Johansen", "Karoline Møller", "Olivia Knudsen", "Amalie Mortensen",
+            "Liva Nielsen", "Marie Holm", "Frida Klausen", "Silje Schmidt", "Julie Vestergaard",
+            "Agnes Lund", "Rosa Skov", "Sofie Bak", "Mille Krogh", "Sara Jakobsen",
+            "Cecilie Simonsen", "Nanna Iversen", "Astrid Justesen", "Alberte Kjær", "Lea Kjeldsen", "Signe Brandt"
+        ];
+        
+        const cpaLink = "https://t.taffizerq.com/719iel";
+
+        const dailyCaptions = [
+            "Slapper af derhjemme i dag... 🛋️ Har I en god weekend?",
+            "Lige kommet ud af badet 🚿 Se min nye video nedenfor...",
+            "Klar til i aften 🍷 Hvem vil holde mig med selskab?",
+            "Savner nogen at putte med... ❤️ Skriv til mig privat.",
+            "Min nye bikini kom i dag! 👙 Hvad synes I om farven?",
+            "Ups, slettede næsten denne video 🙈 Heldigvis gemte jeg den til jer.",
+            "Træning overstået! 💦 Føler mig fantastisk.",
+            "Tilføjede lige noget helt specielt til VIP galleriet 🔥"
+        ];
+
+        // GUARANTEED RENDER OF ALL 36 PROFILES
+        const grid = document.getElementById('homepageGrid');
+        let htmlCards = '';
+        
+        for (let i = 0; i < allImages.length; i++) {
+            let imgUrl = allImages[i];
+            let name = danishNames[i] || "Emma Nielsen"; // Fallback name just in case
+            
+            htmlCards += `
+                <div class="user-card" onclick="openProfile('${imgUrl}', '${name}')">
+                    <img src="${imgUrl}" alt="Profile Image" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF/?text=LOCKED'">
+                    <div class="user-card-info">
+                        <div class="user-card-name">${name}</div>
+                        <button class="user-card-btn">Tilføj ven</button>
+                    </div>
+                </div>
+            `;
+        }
+        grid.innerHTML = htmlCards;
+
+        // OPEN PROFILE AND GENERATE 30 POSTS
+        function openProfile(imgUrl, name) {
+            document.getElementById('profileModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; 
+            
+            document.getElementById('pAvatar').src = imgUrl;
+            document.getElementById('pName').innerText = name;
+            
+            const timeline = document.getElementById('timelineContainer');
+            let postHtml = ''; 
+
+            for (let i = 0; i < 30; i++) {
+                let caption = dailyCaptions[Math.floor(Math.random() * dailyCaptions.length)];
+                let likes = Math.floor(Math.random() * 900) + 120;
+                let comments = Math.floor(Math.random() * 80) + 12;
+                let hoursAgo = i === 0 ? "Lige nu" : `${i * 3} timer siden`;
+
+                postHtml += `
+                    <div class="post">
+                        <div class="post-header">
+                            <img src="${imgUrl}" alt="Avatar">
+                            <div>
+                                <span class="post-author">${name}</span>
+                                <span class="post-time">${hoursAgo} • 🌎</span>
+                            </div>
+                        </div>
+                        <div class="post-text">${caption}</div>
+                        
+                        <a href="${cpaLink}" target="_blank" class="locked-content">
+                            <img src="${imgUrl}" alt="Locked Content">
+                            <div class="lock-overlay">
+                                <div class="lock-icon">🔒</div>
+                                <div class="lock-title">18+ Låst Indhold</div>
+                                <div class="lock-desc">Bekræft at du er over 18 år for at se videoer og billeder ucenstreret.</div>
+                                <div class="unlock-btn">🔓 Bekræft Alder</div>
+                            </div>
+                        </a>
+                        
+                        <div class="post-stats">
+                            <span>👍❤️ ${likes}</span>
+                            <span>${comments} kommentarer</span>
+                        </div>
+                        <div class="post-actions">
+                            <a href="${cpaLink}" target="_blank" class="action-btn">👍 Synes godt om</a>
+                            <a href="${cpaLink}" target="_blank" class="action-btn">💬 Kommenter</a>
+                            <a href="${cpaLink}" target="_blank" class="action-btn">↪ Del</a>
+                        </div>
+                    </div>
+                `;
+            }
+            timeline.innerHTML = postHtml;
+        }
+
+        // CLOSE PROFILE
+        function closeProfile() {
+            document.getElementById('profileModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>
