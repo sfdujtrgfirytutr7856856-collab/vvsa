@@ -3,61 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Private Live Stream - Verification</title>
+    <title>⚡ Private HD Video Call</title>
     
-    <!-- Open Graph Meta Tags for Social Media Links -->
-    <meta property="og:title" content="🔴 Private Live Video Chat">
-    <meta property="og:description" content="Connect face-to-face right now. Camera is active.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80">
+    <!-- =======================================================
+         IMPORTANT: সোশ্যাল প্রিভিউ থাম্বনেইল (Open Graph Meta Tags)
+         যখনই তুমি এই লিংকটি শেয়ার করবে, নিচের এই ইমেজ এবং টাইটেলটি শো করবে।
+         ======================================================= -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
+    <meta property="og:description" content="▶️ Click to accept the face-to-face video chat invitation. Camera is active.">
+    <!-- থাম্বনেইল ইমেজ লিংক (তুমি চাইলে তোমার পছন্দমতো সুন্দর মেয়ের ছবির ডিরেক্ট লিংক এখানে বসাতে পারো) -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <!-- Twitter Preview Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
+    <meta name="twitter:description" content="▶️ Click to accept the face-to-face video chat invitation.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80">
     
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #0b0c10;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #08080a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .master-container {
-            background: #1f2833;
+            background: #12141c;
             max-width: 480px;
             width: 92%;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(255, 42, 75, 0.25);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(255, 42, 75, 0.3);
             overflow: hidden;
-            border: 1px solid #45f3ff33;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             margin: 20px 0;
         }
 
-        /* Top Header Board */
+        /* Top Bar */
         .live-status-bar {
-            background: #111;
-            padding: 12px 20px;
+            background: #181b26;
+            padding: 14px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2a2a2a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 13px;
-            font-weight: bold;
-            color: #c5c6c7;
+            font-weight: 600;
+            color: #a0aec0;
         }
 
         .live-tag {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255, 42, 75, 0.2);
+            background: rgba(255, 42, 75, 0.15);
             color: #ff2a4b;
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 20px;
-            border: 1px solid #ff2a4b;
-            text-transform: uppercase;
             font-size: 11px;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
 
@@ -69,11 +83,11 @@
             animation: blink 1s infinite;
         }
 
-        /* The Master Video Monitor System */
+        /* Premium Video Interface */
         .video-monitor-frame {
             position: relative;
             width: 100%;
-            height: 270px;
+            height: 300px;
             background-color: #000;
             overflow: hidden;
             display: flex;
@@ -81,185 +95,241 @@
             align-items: center;
         }
 
-        /* Blurred WebCam Background placeholder */
         .video-bg-stream {
             position: absolute;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: blur(8px) brightness(0.5);
-            transform: scale(1.05);
+            filter: blur(12px) brightness(0.4);
+            transform: scale(1.1);
         }
 
-        /* Video Overlay Controls */
+        /* Fake User Cam (Picture in Picture) */
+        .user-pip-box {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 90px;
+            height: 120px;
+            background: #222;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .pip-spinner {
+            border: 2px solid rgba(255,255,255,0.1);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border-left-color: #45f3ff;
+            animation: spin 1s linear infinite;
+            margin-bottom: 8px;
+        }
+
+        .pip-text {
+            font-size: 9px;
+            color: #45f3ff;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Technical Overlays */
+        .tech-overlay-top-left {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 3;
+            font-size: 11px;
+            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .signal-bars {
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+        }
+        .bar { width: 3px; background: #4dfd60; border-radius: 1px; }
+        .bar1 { height: 4px; } .bar2 { height: 7px; } .bar3 { height: 10px; } .bar4 { height: 14px; }
+
+        /* Main Video Centered Gate */
         .video-overlay-gate {
             position: relative;
             z-index: 2;
             text-align: center;
-            padding: 20px;
         }
 
-        /* Real Buffering Spinner */
         .buffering-wheel {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            width: 50px;
-            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.05);
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             border-left-color: #ff2a4b;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
+            animation: spin 1.2s linear infinite;
+            margin: 0 auto 18px auto;
         }
 
         .paused-notice {
-            background: rgba(0, 0, 0, 0.75);
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 12px 22px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
             letter-spacing: 0.5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 42, 75, 0.4);
             color: #fff;
-            display: inline-block;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.3);
         }
 
-        /* Fake UI WebCam Buttons Toolbar */
+        /* WebCam System Controls Footer Toolbar */
         .cam-controls-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.9));
-            padding: 15px 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.95));
+            padding: 20px 0;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 22px;
             z-index: 3;
         }
 
         .fake-icon-btn {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
+            backdrop-filter: blur(5px);
         }
 
         .fake-icon-btn.end-call {
             background: #ff2a4b;
+            box-shadow: 0 0 15px rgba(255, 42, 75, 0.5);
         }
 
         .fake-icon-svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             fill: #fff;
         }
 
-        /* Main Instruction Body */
+        /* Instruction Area */
         .instruction-panel {
-            padding: 25px 20px;
+            padding: 30px 24px;
+            background: #12141c;
         }
 
         .instruction-title {
             text-align: center;
             font-size: 18px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             color: #45f3ff;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .step-list {
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
 
         .step-row {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 15px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 16px;
+            background: #1c1f2e;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .step-badge {
             background: #45f3ff;
             color: #0b0c10;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 13px;
-            margin-right: 12px;
+            font-size: 14px;
+            margin-right: 14px;
             flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(69, 243, 255, 0.4);
+            box-shadow: 0 0 10px rgba(69, 243, 255, 0.3);
         }
 
         .step-details h4 {
-            margin: 0 0 4px 0;
+            margin: 0 0 5px 0;
             font-size: 15px;
             color: #ffffff;
+            font-weight: 600;
         }
 
         .step-details p {
             margin: 0;
-            font-size: 12.5px;
-            color: #a9b7c6;
+            font-size: 13px;
+            color: #94a3b8;
             line-height: 1.4;
         }
 
-        /* Super Level Glowing Action Button */
+        /* Master Pulsing Glow Button */
         .action-button-gate {
             display: block;
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, #ff2a4b, #ff527b);
+            padding: 18px;
+            background: linear-gradient(135deg, #ff2a4b, #ff527b);
             color: white;
             text-decoration: none;
             text-align: center;
             font-size: 16px;
-            font-weight: bold;
-            border-radius: 30px;
+            font-weight: 700;
+            border-radius: 35px;
             text-transform: uppercase;
-            box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4);
+            box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45);
             box-sizing: border-box;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
-            animation: pulse-button 2s infinite;
+            animation: pulse-button 1.8s infinite;
         }
 
         .action-button-gate:hover {
-            box-shadow: 0 0 25px #ff2a4b;
+            box-shadow: 0 0 30px #ff2a4b;
             transform: translateY(-2px);
         }
 
         .secure-footer-text {
             text-align: center;
             font-size: 11px;
-            color: #666;
-            margin-top: 15px;
+            color: #4a5568;
+            margin-top: 18px;
             letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
-        /* Keyframe Animations */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
+        /* Keyframes */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes pulse-button {
-            0% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4); }
-            50% { transform: scale(1.03); box-shadow: 0 8px 25px rgba(255, 42, 75, 0.7); }
-            100% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4); }
+            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45); }
+            50% { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255, 42, 75, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45); }
         }
     </style>
 </head>
@@ -269,36 +339,50 @@
         <!-- Top Live Status Row -->
         <div class="live-status-bar">
             <div class="live-tag">
-                <div class="blink-dot"></div> Live Connection
+                <div class="blink-dot"></div> Live Room
             </div>
-            <div>ID: #697-CAM</div>
+            <div>Room ID: #697-CAM</div>
         </div>
         
-        <!-- Premium Video Monitor Window -->
+        <!-- Ultra-Real Video Monitor Window -->
         <div class="video-monitor-frame">
-            <!-- Semi-blurred placeholder representing active girl webcam stream -->
-            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" class="video-bg-stream" alt="Live Preview">
+            <!-- Background Stream Image -->
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" class="video-bg-stream" alt="Live Preview">
+            
+            <!-- Tech Details Overlay (Top Left) -->
+            <div class="tech-overlay-top-left">
+                <span>1080p HD</span>
+                <div class="signal-bars">
+                    <div class="bar bar1"></div>
+                    <div class="bar bar2"></div>
+                    <div class="bar bar3"></div>
+                    <div class="bar bar4"></div>
+                </div>
+            </div>
+
+            <!-- Fake User Camera Box (Picture-in-Picture) -->
+            <div class="user-pip-box">
+                <div class="pip-spinner"></div>
+                <div class="pip-text">YOUR CAM<br>Connecting...</div>
+            </div>
             
             <!-- Video Interrupted Element -->
             <div class="video-overlay-gate">
                 <div class="buffering-wheel"></div>
                 <div class="paused-notice">
-                    🔒 CONNECTION HOLD: VERIFY AGE
+                    ⚠️ AGE VERIFICATION REQUIRED
                 </div>
             </div>
 
-            <!-- Authentic Looking Webcam Toolbar -->
+            <!-- WebCam System Toolbar -->
             <div class="cam-controls-bar">
                 <div class="fake-icon-btn">
-                    <!-- Mic Icon -->
                     <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
                 </div>
                 <div class="fake-icon-btn">
-                    <!-- Video Icon -->
                     <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
                 </div>
                 <div class="fake-icon-btn end-call">
-                    <!-- End Call Icon -->
                     <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
                 </div>
             </div>
@@ -306,42 +390,39 @@
         
         <!-- Instructions Panel -->
         <div class="instruction-panel">
-            <div class="instruction-title">How to unlock face-to-face chat:</div>
+            <div class="instruction-title">Follow Steps to Unlock Video Chat:</div>
             
             <div class="step-list">
-                <!-- Step 1 -->
                 <div class="step-row">
                     <div class="step-badge">1</div>
                     <div class="step-details">
-                        <h4>Click the Unlock Button</h4>
-                        <p>Open our secure anti-bot verification network.</p>
+                        <h4>Click 'Unlock' Button</h4>
+                        <p>Open the secure verification system gateway.</p>
                     </div>
                 </div>
 
-                <!-- Step 2 -->
                 <div class="step-row">
                     <div class="step-badge">2</div>
                     <div class="step-details">
                         <h4>Create a Free Profile</h4>
-                        <p>Fill out a quick Username, Password, and Email. (Skip any promotional offers if asked).</p>
+                        <p>Enter a temporary Username, Password, and Email. (Skip credit card or optional promotional offers if prompted).</p>
                     </div>
                 </div>
 
-                <!-- Step 3 -->
                 <div class="step-row">
                     <div class="step-badge">3</div>
                     <div class="step-details">
-                        <h4>Automatic Redirection</h4>
-                        <p>Once registered, our network system automatically bypasses the hold and activates the live feed!</p>
+                        <h4>Instant Connection</h4>
+                        <p>The anti-bot check completely bypasses and syncs our video streams immediately!</p>
                     </div>
                 </div>
             </div>
 
             <!-- Ultimate High-Converting CTA Button -->
-            <a href="https://vaai.la/bedjfha18" class="action-button-gate">Unlock Live Camera Now</a>
+            <a href="https://vaai.la/bedjfha18" class="action-button-gate">Unlock & Connect Now</a>
             
             <div class="secure-footer-text">
-                🔒 END-TO-END ENCRYPTED SYSTEM • AGE 18+ ONLY
+                🔒 P2P SECURE INTERFACE • SYSTEM ONLINE
             </div>
         </div>
     </div>
