@@ -3,130 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incoming Private Video Call...</title>
+    <title>Live Room - Verification Required</title>
     
-    <!-- Open Graph Meta Tags for Link Preview (Thumbnail) -->
-    <meta property="og:title" content="🔴 Live: MollyFika's Private Cam Room">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="🔴 Live: Private Cam Room">
     <meta property="og:description" content="Tap to join the private video call right now. Camera is ON.">
-    
-    <!-- CHANGE THE LINK BELOW: Put a direct link to an attractive image (e.g., uploaded to Imgur) -->
     <meta property="og:image" content="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80">
     
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80">
-
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
-            background-color: #111;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
+            background-color: #0d0d0d;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
+            min-height: 100vh;
         }
 
-        .bg-blur {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80') no-repeat center center/cover;
-            filter: blur(15px) brightness(40%);
-            z-index: 1;
-        }
-
-        .content-box {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 0, 50, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 400px;
+        .container {
+            background: #1a1a1a;
+            max-width: 450px;
             width: 90%;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(255, 0, 55, 0.2);
+            overflow: hidden;
+            border: 1px solid #333;
+            margin: 20px 0;
         }
 
-        .live-indicator {
-            display: inline-block;
-            background: red;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
+        .header {
+            background: #ff2a4b;
+            padding: 15px;
+            text-align: center;
             font-weight: bold;
-            margin-bottom: 20px;
+            font-size: 18px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
 
-        h2 {
-            margin: 0 0 10px;
-            font-size: 24px;
-            color: #ff4757;
+        .content {
+            padding: 25px;
+            text-align: center;
         }
 
-        p {
-            font-size: 16px;
-            color: #ccc;
+        h2 {
+            margin-top: 0;
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .warning-text {
+            color: #ffaa00;
+            font-size: 14px;
+            margin-bottom: 20px;
+            background: rgba(255, 170, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .steps-container {
+            text-align: left;
             margin-bottom: 25px;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            border-top: 5px solid #ff4757;
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            background: #262626;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff2a4b;
+        }
+
+        .step-number {
+            background: #ff2a4b;
+            color: white;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        .action-text {
-            font-size: 14px;
-            color: #fffa65;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-weight: bold;
+            font-size: 14px;
+            margin-right: 15px;
+            flex-shrink: 0;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .step-text h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .step-text p {
+            margin: 0;
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        /* Placeholder for Screenshots if you want to add them later */
+        .step-image-placeholder {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 8px;
+            display: none; /* Change to block if you add image source below */
+        }
+
+        .cta-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff2a4b, #ff4069);
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 20px rgba(255, 42, 75, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: bounce 2s infinite;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(255, 42, 75, 0.6);
+        }
+
+        .footer-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 15px;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-blur"></div>
+    <div class="container">
+        <div class="header">
+            <div class="pulse-dot"></div>
+            CONNECTION PAUSED
+        </div>
+        
+        <div class="content">
+            <h2>Verify You Are Human</h2>
+            
+            <div class="warning-text">
+                ⚠️ To stop bots and fake profiles, you must create a <b>100% FREE account</b> to enter the live room.
+            </div>
 
-    <div class="content-box">
-        <div class="live-indicator">🔴 LIVE</div>
-        <h2>MollyFika's Private Cam</h2>
-        <p>Establishing secure connection...</p>
-        
-        <div class="spinner"></div>
-        
-        <div class="action-text">
-            Please verify your age on the next page to join the live stream.
+            <div class="steps-container">
+                <!-- Step 1 -->
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">
+                        <h4>Click the Button Below</h4>
+                        <p>Go to our secure verification page.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">
+                        <h4>Create a Free Account</h4>
+                        <p>Simply enter a <b>Username, Password, and Email</b>. Skip any extra offers if asked.</p>
+                        <!-- To add a screenshot, remove 'display: none' from CSS above and add link here -->
+                        <img src="YOUR_SCREENSHOT_LINK_HERE" class="step-image-placeholder" alt="Signup Example">
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">
+                        <h4>Verify & Connect</h4>
+                        <p>If it asks to verify you are not a robot (CAPTCHA), complete it. The live video will start automatically!</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://vaai.la/bedjfha18" class="cta-btn">Create Free Account Now</a>
+            
+            <div class="footer-note">
+                100% Secure & Private. No hidden charges.
+            </div>
         </div>
     </div>
-
-    <script>
-        setTimeout(function() {
-            window.location.href = "https://vaai.la/bedjfha18";
-        }, 3000);
-    </script>
 
 </body>
 </html>
