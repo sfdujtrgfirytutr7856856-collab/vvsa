@@ -6,14 +6,13 @@
     <title>⚡ Private HD Video Call</title>
     
     <!-- =======================================================
-         IMPORTANT: সোশ্যাল প্রিভিউ থাম্বনেইল (Open Graph Meta Tags)
-         যখনই তুমি এই লিংকটি শেয়ার করবে, নিচের এই ইমেজ এবং টাইটেলটি শো করবে।
+         সোশ্যাল প্রিভিউ থাম্বনেইল (Open Graph Meta Tags)
          ======================================================= -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
     <meta property="og:description" content="▶️ Click to accept the face-to-face video chat invitation. Camera is active.">
-    <!-- থাম্বনেইল ইমেজ লিংক (তুমি চাইলে তোমার পছন্দমতো সুন্দর মেয়ের ছবির ডিরেক্ট লিংক এখানে বসাতে পারো) -->
-    <meta property="og:image" content="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80">
+    <!-- তোমার দেওয়া কাস্টম ইমেজ লিংক -->
+    <meta property="og:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     
@@ -21,7 +20,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
     <meta name="twitter:description" content="▶️ Click to accept the face-to-face video chat invitation.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80">
+    <meta name="twitter:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
     
     <style>
         body, html {
@@ -100,8 +99,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: blur(12px) brightness(0.4);
-            transform: scale(1.1);
+            /* মুখ যেন চেনা না যায় তার জন্য ব্লার লেভেল বাড়িয়ে ১৮px করা হয়েছে */
+            filter: blur(18px) brightness(0.45);
+            transform: scale(1.15);
         }
 
         /* Fake User Cam (Picture in Picture) */
@@ -346,8 +346,8 @@
         
         <!-- Ultra-Real Video Monitor Window -->
         <div class="video-monitor-frame">
-            <!-- Background Stream Image -->
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" class="video-bg-stream" alt="Live Preview">
+            <!-- তোমার দেওয়া কাস্টম ইমেজ যা ব্যাকগ্রাউন্ডে হেভি ব্লার হয়ে থাকবে -->
+            <img src="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true" class="video-bg-stream" alt="Live Preview">
             
             <!-- Tech Details Overlay (Top Left) -->
             <div class="tech-overlay-top-left">
