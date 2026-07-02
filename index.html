@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Room - Verification Required</title>
+    <title>Private Live Stream - Verification</title>
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="🔴 Live: Private Cam Room">
-    <meta property="og:description" content="Tap to join the private video call right now. Camera is ON.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80">
+    <!-- Open Graph Meta Tags for Social Media Links -->
+    <meta property="og:title" content="🔴 Private Live Video Chat">
+    <meta property="og:description" content="Connect face-to-face right now. Camera is active.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80">
     
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #0d0d0d;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0c10;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             display: flex;
             justify-content: center;
@@ -23,77 +23,170 @@
             min-height: 100vh;
         }
 
-        .container {
-            background: #1a1a1a;
-            max-width: 450px;
-            width: 90%;
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(255, 0, 55, 0.2);
+        .master-container {
+            background: #1f2833;
+            max-width: 480px;
+            width: 92%;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(255, 42, 75, 0.25);
             overflow: hidden;
-            border: 1px solid #333;
+            border: 1px solid #45f3ff33;
             margin: 20px 0;
         }
 
-        .header {
-            background: #ff2a4b;
-            padding: 15px;
-            text-align: center;
+        /* Top Header Board */
+        .live-status-bar {
+            background: #111;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+            font-size: 13px;
             font-weight: bold;
-            font-size: 18px;
-            letter-spacing: 1px;
+            color: #c5c6c7;
+        }
+
+        .live-tag {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 6px;
+            background: rgba(255, 42, 75, 0.2);
+            color: #ff2a4b;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid #ff2a4b;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
         }
 
-        .pulse-dot {
-            width: 12px;
-            height: 12px;
-            background-color: white;
+        .blink-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ff2a4b;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
+            animation: blink 1s infinite;
         }
 
-        .content {
-            padding: 25px;
+        /* The Master Video Monitor System */
+        .video-monitor-frame {
+            position: relative;
+            width: 100%;
+            height: 270px;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Blurred WebCam Background placeholder */
+        .video-bg-stream {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(8px) brightness(0.5);
+            transform: scale(1.05);
+        }
+
+        /* Video Overlay Controls */
+        .video-overlay-gate {
+            position: relative;
+            z-index: 2;
             text-align: center;
+            padding: 20px;
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 22px;
-            color: #fff;
+        /* Real Buffering Spinner */
+        .buffering-wheel {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: #ff2a4b;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
         }
 
-        .warning-text {
-            color: #ffaa00;
-            font-size: 14px;
-            margin-bottom: 20px;
-            background: rgba(255, 170, 0, 0.1);
-            padding: 10px;
+        .paused-notice {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 10px 18px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 170, 0, 0.3);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: inline-block;
         }
 
-        .steps-container {
-            text-align: left;
+        /* Fake UI WebCam Buttons Toolbar */
+        .cam-controls-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 3;
+        }
+
+        .fake-icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .fake-icon-btn.end-call {
+            background: #ff2a4b;
+        }
+
+        .fake-icon-svg {
+            width: 18px;
+            height: 18px;
+            fill: #fff;
+        }
+
+        /* Main Instruction Body */
+        .instruction-panel {
+            padding: 25px 20px;
+        }
+
+        .instruction-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #45f3ff;
+            font-weight: 600;
+        }
+
+        .step-list {
             margin-bottom: 25px;
         }
 
-        .step {
+        .step-row {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 18px;
-            background: #262626;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
             padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #ff2a4b;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .step-number {
-            background: #ff2a4b;
-            color: white;
+        .step-badge {
+            background: #45f3ff;
+            color: #0b0c10;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -101,123 +194,154 @@
             justify-content: center;
             align-items: center;
             font-weight: bold;
-            font-size: 14px;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-
-        .step-text h4 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-            color: #fff;
-        }
-
-        .step-text p {
-            margin: 0;
             font-size: 13px;
-            color: #aaa;
+            margin-right: 12px;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(69, 243, 255, 0.4);
+        }
+
+        .step-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+            color: #ffffff;
+        }
+
+        .step-details p {
+            margin: 0;
+            font-size: 12.5px;
+            color: #a9b7c6;
             line-height: 1.4;
         }
 
-        /* Placeholder for Screenshots if you want to add them later */
-        .step-image-placeholder {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-top: 8px;
-            display: none; /* Change to block if you add image source below */
-        }
-
-        .cta-btn {
+        /* Super Level Glowing Action Button */
+        .action-button-gate {
             display: block;
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #ff2a4b, #ff4069);
+            padding: 16px;
+            background: linear-gradient(45deg, #ff2a4b, #ff527b);
             color: white;
             text-decoration: none;
-            font-size: 18px;
+            text-align: center;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 30px;
             text-transform: uppercase;
-            box-shadow: 0 10px 20px rgba(255, 42, 75, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            animation: bounce 2s infinite;
+            box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            animation: pulse-button 2s infinite;
         }
 
-        .cta-btn:hover {
+        .action-button-gate:hover {
+            box-shadow: 0 0 25px #ff2a4b;
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(255, 42, 75, 0.6);
         }
 
-        .footer-note {
-            font-size: 12px;
+        .secure-footer-text {
+            text-align: center;
+            font-size: 11px;
             color: #666;
             margin-top: 15px;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        /* Keyframe Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-10px);}
-            60% {transform: translateY(-5px);}
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes pulse-button {
+            0% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 8px 25px rgba(255, 42, 75, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <div class="pulse-dot"></div>
-            CONNECTION PAUSED
+    <div class="master-container">
+        <!-- Top Live Status Row -->
+        <div class="live-status-bar">
+            <div class="live-tag">
+                <div class="blink-dot"></div> Live Connection
+            </div>
+            <div>ID: #697-CAM</div>
         </div>
         
-        <div class="content">
-            <h2>Verify You Are Human</h2>
+        <!-- Premium Video Monitor Window -->
+        <div class="video-monitor-frame">
+            <!-- Semi-blurred placeholder representing active girl webcam stream -->
+            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80" class="video-bg-stream" alt="Live Preview">
             
-            <div class="warning-text">
-                ⚠️ To stop bots and fake profiles, you must create a <b>100% FREE account</b> to enter the live room.
+            <!-- Video Interrupted Element -->
+            <div class="video-overlay-gate">
+                <div class="buffering-wheel"></div>
+                <div class="paused-notice">
+                    🔒 CONNECTION HOLD: VERIFY AGE
+                </div>
             </div>
 
-            <div class="steps-container">
+            <!-- Authentic Looking Webcam Toolbar -->
+            <div class="cam-controls-bar">
+                <div class="fake-icon-btn">
+                    <!-- Mic Icon -->
+                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                </div>
+                <div class="fake-icon-btn">
+                    <!-- Video Icon -->
+                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                </div>
+                <div class="fake-icon-btn end-call">
+                    <!-- End Call Icon -->
+                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instructions Panel -->
+        <div class="instruction-panel">
+            <div class="instruction-title">How to unlock face-to-face chat:</div>
+            
+            <div class="step-list">
                 <!-- Step 1 -->
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-text">
-                        <h4>Click the Button Below</h4>
-                        <p>Go to our secure verification page.</p>
+                <div class="step-row">
+                    <div class="step-badge">1</div>
+                    <div class="step-details">
+                        <h4>Click the Unlock Button</h4>
+                        <p>Open our secure anti-bot verification network.</p>
                     </div>
                 </div>
 
                 <!-- Step 2 -->
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-text">
-                        <h4>Create a Free Account</h4>
-                        <p>Simply enter a <b>Username, Password, and Email</b>. Skip any extra offers if asked.</p>
-                        <!-- To add a screenshot, remove 'display: none' from CSS above and add link here -->
-                        <img src="YOUR_SCREENSHOT_LINK_HERE" class="step-image-placeholder" alt="Signup Example">
+                <div class="step-row">
+                    <div class="step-badge">2</div>
+                    <div class="step-details">
+                        <h4>Create a Free Profile</h4>
+                        <p>Fill out a quick Username, Password, and Email. (Skip any promotional offers if asked).</p>
                     </div>
                 </div>
 
                 <!-- Step 3 -->
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-text">
-                        <h4>Verify & Connect</h4>
-                        <p>If it asks to verify you are not a robot (CAPTCHA), complete it. The live video will start automatically!</p>
+                <div class="step-row">
+                    <div class="step-badge">3</div>
+                    <div class="step-details">
+                        <h4>Automatic Redirection</h4>
+                        <p>Once registered, our network system automatically bypasses the hold and activates the live feed!</p>
                     </div>
                 </div>
             </div>
 
-            <a href="https://vaai.la/bedjfha18" class="cta-btn">Create Free Account Now</a>
+            <!-- Ultimate High-Converting CTA Button -->
+            <a href="https://vaai.la/bedjfha18" class="action-button-gate">Unlock Live Camera Now</a>
             
-            <div class="footer-note">
-                100% Secure & Private. No hidden charges.
+            <div class="secure-footer-text">
+                🔒 END-TO-END ENCRYPTED SYSTEM • AGE 18+ ONLY
             </div>
         </div>
     </div>
