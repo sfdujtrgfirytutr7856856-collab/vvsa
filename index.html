@@ -3,429 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Private HD Video Call</title>
+    <title>🔴 Private Room Invitation</title>
     
-    <!-- =======================================================
-         সোশ্যাল প্রিভিউ থাম্বনেইল (Open Graph Meta Tags)
-         ======================================================= -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
-    <meta property="og:description" content="▶️ Click to accept the face-to-face video chat invitation. Camera is active.">
-    <!-- তোমার দেওয়া কাস্টম ইমেজ লিংক -->
+    <!-- Open Graph for Thumbnail -->
+    <meta property="og:title" content="🔴 Incoming Video Call...">
     <meta property="og:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    
-    <!-- Twitter Preview Cards -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="🔴 LIVE VIDEO CALL: Incoming Chat Request...">
-    <meta name="twitter:description" content="▶️ Click to accept the face-to-face video chat invitation.">
-    <meta name="twitter:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
     
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #08080a;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #ffffff;
+            margin: 0; padding: 0;
+            background-color: #050505;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            -webkit-user-select: none;
+            overflow: hidden;
             user-select: none;
         }
 
-        .master-container {
-            background: #12141c;
-            max-width: 480px;
-            width: 92%;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(255, 42, 75, 0.3);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            margin: 20px 0;
+        /* Blurred Background */
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover;
+            filter: blur(15px) brightness(0.3);
+            z-index: 0;
+            transform: scale(1.1);
         }
 
-        /* Top Bar */
-        .live-status-bar {
-            background: #181b26;
-            padding: 14px 20px;
+        .main-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 420px;
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 42, 75, 0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255, 42, 75, 0.2);
+            overflow: hidden;
+        }
+
+        /* Header Info */
+        .header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 13px;
-            font-weight: 600;
-            color: #a0aec0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .live-tag {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 42, 75, 0.15);
-            color: #ff2a4b;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .live-badge {
+            display: flex; align-items: center; gap: 6px;
+            color: #ff2a4b; font-size: 12px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .blink-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #ff2a4b;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-        }
+        .dot { width: 8px; height: 8px; background: #ff2a4b; border-radius: 50%; animation: blink 1s infinite; }
+        
+        .viewers { font-size: 11px; color: #888; display: flex; align-items: center; gap: 4px; }
+        .viewers-icon { color: #00e676; }
 
-        /* Premium Video Interface */
-        .video-monitor-frame {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            background-color: #000;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        /* Progress Bar */
+        .progress-bar { width: 100%; height: 4px; background: #333; }
+        .progress-fill { height: 100%; width: 33%; background: #00e676; transition: width 0.4s ease; }
 
-        .video-bg-stream {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* মুখ যেন চেনা না যায় তার জন্য ব্লার লেভেল বাড়িয়ে ১৮px করা হয়েছে */
-            filter: blur(18px) brightness(0.45);
-            transform: scale(1.15);
-        }
+        /* Content Area */
+        .content { padding: 30px 20px; text-align: center; min-height: 220px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .step { display: none; animation: fadeIn 0.5s ease; }
+        .step.active { display: block; }
 
-        /* Fake User Cam (Picture in Picture) */
-        .user-pip-box {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 90px;
-            height: 120px;
-            background: #222;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 4;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            padding: 5px;
-            box-sizing: border-box;
-        }
+        h2 { font-size: 20px; margin: 0 0 10px 0; color: #fff; }
+        p { font-size: 14px; color: #aaa; margin-bottom: 25px; line-height: 1.5; }
 
-        .pip-spinner {
-            border: 2px solid rgba(255,255,255,0.1);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border-left-color: #45f3ff;
-            animation: spin 1s linear infinite;
-            margin-bottom: 8px;
+        /* Question Buttons */
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
+        .btn-ans {
+            flex: 1; padding: 14px;
+            border: none; border-radius: 10px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s;
         }
+        .btn-yes { background: #00e676; color: #000; box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3); }
+        .btn-no { background: #333; color: #fff; border: 1px solid #555; }
+        .btn-ans:active { transform: scale(0.95); }
 
-        .pip-text {
-            font-size: 9px;
-            color: #45f3ff;
-            text-align: center;
-            font-weight: bold;
+        /* Final Step Elements */
+        .typing-indicator { font-size: 13px; color: #00e676; margin-bottom: 15px; font-style: italic; }
+        
+        .timer-box {
+            background: rgba(255, 42, 75, 0.1);
+            border: 1px dashed #ff2a4b;
+            padding: 10px; border-radius: 8px;
+            margin-bottom: 20px; color: #ffaa00; font-size: 13px;
         }
+        #countdown { font-weight: bold; color: #ff2a4b; font-size: 15px; }
 
-        /* Technical Overlays */
-        .tech-overlay-top-left {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            z-index: 3;
-            font-size: 11px;
-            font-family: monospace;
-            background: rgba(0,0,0,0.5);
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .signal-bars {
-            display: flex;
-            gap: 2px;
-            align-items: flex-end;
-        }
-        .bar { width: 3px; background: #4dfd60; border-radius: 1px; }
-        .bar1 { height: 4px; } .bar2 { height: 7px; } .bar3 { height: 10px; } .bar4 { height: 14px; }
-
-        /* Main Video Centered Gate */
-        .video-overlay-gate {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .buffering-wheel {
-            border: 5px solid rgba(255, 255, 255, 0.05);
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border-left-color: #ff2a4b;
-            animation: spin 1.2s linear infinite;
-            margin: 0 auto 18px auto;
-        }
-
-        .paused-notice {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 12px 22px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            border: 1px solid rgba(255, 42, 75, 0.4);
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 42, 75, 0.3);
-        }
-
-        /* WebCam System Controls Footer Toolbar */
-        .cam-controls-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.95));
-            padding: 20px 0;
-            display: flex;
-            justify-content: center;
-            gap: 22px;
-            z-index: 3;
-        }
-
-        .fake-icon-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .fake-icon-btn.end-call {
-            background: #ff2a4b;
-            box-shadow: 0 0 15px rgba(255, 42, 75, 0.5);
-        }
-
-        .fake-icon-svg {
-            width: 20px;
-            height: 20px;
-            fill: #fff;
-        }
-
-        /* Instruction Area */
-        .instruction-panel {
-            padding: 30px 24px;
-            background: #12141c;
-        }
-
-        .instruction-title {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 22px;
-            color: #45f3ff;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .step-list {
-            margin-bottom: 28px;
-        }
-
-        .step-row {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            background: #1c1f2e;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .step-badge {
-            background: #45f3ff;
-            color: #0b0c10;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            margin-right: 14px;
-            flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(69, 243, 255, 0.3);
-        }
-
-        .step-details h4 {
-            margin: 0 0 5px 0;
-            font-size: 15px;
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        .step-details p {
-            margin: 0;
-            font-size: 13px;
-            color: #94a3b8;
-            line-height: 1.4;
-        }
-
-        /* Master Pulsing Glow Button */
-        .action-button-gate {
-            display: block;
-            width: 100%;
-            padding: 18px;
+        .final-cta {
+            display: block; width: 100%; padding: 18px;
             background: linear-gradient(135deg, #ff2a4b, #ff527b);
-            color: white;
-            text-decoration: none;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 700;
-            border-radius: 35px;
-            text-transform: uppercase;
-            box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45);
+            color: white; text-decoration: none; font-size: 18px;
+            font-weight: 800; border-radius: 30px; text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(255, 42, 75, 0.5);
+            animation: pulse 1.5s infinite;
             box-sizing: border-box;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            animation: pulse-button 1.8s infinite;
         }
 
-        .action-button-gate:hover {
-            box-shadow: 0 0 30px #ff2a4b;
-            transform: translateY(-2px);
+        .trust-text { margin-top: 15px; font-size: 11px; color: #666; }
+        .trust-text span { color: #00e676; font-weight: bold; }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px;
+            border-radius: 50%; border-left-color: #00e676;
+            animation: spin 1s linear infinite; margin: 0 auto 15px auto;
         }
 
-        .secure-footer-text {
-            text-align: center;
-            font-size: 11px;
-            color: #4a5568;
-            margin-top: 18px;
-            letter-spacing: 0.5px;
-            font-weight: 500;
-        }
-
-        /* Keyframes */
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* Animations */
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes pulse-button {
-            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45); }
-            50% { transform: scale(1.02); box-shadow: 0 10px 30px rgba(255, 42, 75, 0.7); }
-            100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.45); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(255, 42, 75, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 42, 75, 0.4); }
         }
     </style>
 </head>
 <body>
 
-    <div class="master-container">
-        <!-- Top Live Status Row -->
-        <div class="live-status-bar">
-            <div class="live-tag">
-                <div class="blink-dot"></div> Live Room
-            </div>
-            <div>Room ID: #697-CAM</div>
+    <div class="bg-image"></div>
+
+    <div class="main-container">
+        <div class="header">
+            <div class="live-badge"><div class="dot"></div> Live Room</div>
+            <div class="viewers"><span class="viewers-icon">●</span> 14 Guys Waiting</div>
         </div>
         
-        <!-- Ultra-Real Video Monitor Window -->
-        <div class="video-monitor-frame">
-            <!-- তোমার দেওয়া কাস্টম ইমেজ যা ব্যাকগ্রাউন্ডে হেভি ব্লার হয়ে থাকবে -->
-            <img src="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true" class="video-bg-stream" alt="Live Preview">
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+        <div class="content">
             
-            <!-- Tech Details Overlay (Top Left) -->
-            <div class="tech-overlay-top-left">
-                <span>1080p HD</span>
-                <div class="signal-bars">
-                    <div class="bar bar1"></div>
-                    <div class="bar bar2"></div>
-                    <div class="bar bar3"></div>
-                    <div class="bar bar4"></div>
+            <!-- Step 1: Age Verification -->
+            <div class="step active" id="step1">
+                <h2>Are you over 18?</h2>
+                <p>This private live broadcast contains explicit content. You must be an adult to enter.</p>
+                <div class="btn-group">
+                    <button class="btn-ans btn-no" onclick="nextStep(2)">NO</button>
+                    <button class="btn-ans btn-yes" onclick="nextStep(2)">YES</button>
                 </div>
             </div>
 
-            <!-- Fake User Camera Box (Picture-in-Picture) -->
-            <div class="user-pip-box">
-                <div class="pip-spinner"></div>
-                <div class="pip-text">YOUR CAM<br>Connecting...</div>
-            </div>
-            
-            <!-- Video Interrupted Element -->
-            <div class="video-overlay-gate">
-                <div class="buffering-wheel"></div>
-                <div class="paused-notice">
-                    ⚠️ AGE VERIFICATION REQUIRED
+            <!-- Step 2: Privacy Agreement -->
+            <div class="step" id="step2">
+                <h2>Keep it Private?</h2>
+                <p>Do you agree to NOT record or take screenshots of the girl on camera?</p>
+                <div class="btn-group">
+                    <button class="btn-ans btn-no" onclick="nextStep(3)">NO</button>
+                    <button class="btn-ans btn-yes" onclick="nextStep(3)">YES, I AGREE</button>
                 </div>
             </div>
 
-            <!-- WebCam System Toolbar -->
-            <div class="cam-controls-bar">
-                <div class="fake-icon-btn">
-                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
-                </div>
-                <div class="fake-icon-btn">
-                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                </div>
-                <div class="fake-icon-btn end-call">
-                    <svg class="fake-icon-svg" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
-                </div>
+            <!-- Step 3: Loading System -->
+            <div class="step" id="step3">
+                <div class="spinner"></div>
+                <h2>Connecting to Stream...</h2>
+                <p>Bypassing server blocks and syncing video connection. Please wait...</p>
             </div>
-        </div>
-        
-        <!-- Instructions Panel -->
-        <div class="instruction-panel">
-            <div class="instruction-title">Follow Steps to Unlock Video Chat:</div>
-            
-            <div class="step-list">
-                <div class="step-row">
-                    <div class="step-badge">1</div>
-                    <div class="step-details">
-                        <h4>Click 'Unlock' Button</h4>
-                        <p>Open the secure verification system gateway.</p>
-                    </div>
-                </div>
 
-                <div class="step-row">
-                    <div class="step-badge">2</div>
-                    <div class="step-details">
-                        <h4>Create a Free Profile</h4>
-                        <p>Enter a temporary Username, Password, and Email. (Skip credit card or optional promotional offers if prompted).</p>
-                    </div>
+            <!-- Step 4: Final Unlock (The Smartlink) -->
+            <div class="step" id="step4">
+                <div class="typing-indicator">Host is waiting for you...</div>
+                <h2>Verification Passed!</h2>
+                
+                <div class="timer-box">
+                    ⚠️ Room closes automatically in: <span id="countdown">03:00</span>
                 </div>
-
-                <div class="step-row">
-                    <div class="step-badge">3</div>
-                    <div class="step-details">
-                        <h4>Instant Connection</h4>
-                        <p>The anti-bot check completely bypasses and syncs our video streams immediately!</p>
-                    </div>
+                
+                <p style="font-size:12px; margin-bottom: 15px;">Create a <b>FREE</b> account to verify you are a real human. Skip any card offers if asked.</p>
+                
+                <!-- YOUR SMARTLINK GOES HERE -->
+                <a href="https://vaai.la/bedjfha18" class="final-cta">CREATE FREE ACCOUNT</a>
+                
+                <div class="trust-text">
+                    🔒 <span>100% SECURE</span> • No Hidden Charges
                 </div>
             </div>
 
-            <!-- Ultimate High-Converting CTA Button -->
-            <a href="https://vaai.la/bedjfha18" class="action-button-gate">Unlock & Connect Now</a>
-            
-            <div class="secure-footer-text">
-                🔒 P2P SECURE INTERFACE • SYSTEM ONLINE
-            </div>
         </div>
     </div>
 
+    <script>
+        function nextStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            
+            // Progress Bar Logic
+            const progress = document.getElementById('progress');
+            if(step === 2) progress.style.width = '66%';
+            if(step === 3) progress.style.width = '90%';
+            if(step === 4) progress.style.width = '100%';
+
+            // Show current step
+            document.getElementById('step' + step).classList.add('active');
+
+            // If it's the loading step, wait 2 seconds then go to final step
+            if(step === 3) {
+                setTimeout(() => {
+                    nextStep(4);
+                    startTimer();
+                }, 2200);
+            }
+        }
+
+        // Countdown Timer Logic
+        function startTimer() {
+            let time = 180; // 3 minutes in seconds
+            const timerEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                let minutes = Math.floor(time / 60);
+                let seconds = time % 60;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                timerEl.textContent = `0${minutes}:${seconds}`;
+                if(time <= 0) clearInterval(interval);
+                time--;
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
