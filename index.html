@@ -3,165 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Incoming Video Call...</title>
-    
-    <meta property="og:title" content="📲 Missed Video Call...">
-    <meta property="og:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
+    <title>📞 Incoming Video Call...</title>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
         
         body, html {
             width: 100%; height: 100vh;
-            background-color: #111;
+            background-color: #000;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Background Blur of the Girl */
+        /* Fake Mobile Status Bar */
+        .status-bar {
+            position: absolute; top: 0; left: 0; width: 100%;
+            display: flex; justify-content: space-between; padding: 10px 20px;
+            color: white; font-size: 14px; font-weight: bold; z-index: 20;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        .status-right { display: flex; gap: 8px; align-items: center; }
+
+        /* Blurred Background */
         .bg-stream {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover;
-            filter: blur(18px) brightness(0.4);
-            z-index: 1; transform: scale(1.1);
+            filter: blur(25px) brightness(0.3);
+            z-index: 1; transform: scale(1.1); animation: breathe 4s infinite alternate;
         }
 
-        /* Mobile Frame Container */
         .app-container {
             position: relative; z-index: 10;
-            width: 100%; max-width: 400px; height: 100vh; max-height: 800px;
+            width: 100%; max-width: 420px; height: 100vh;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 40px 20px;
+            padding: 50px 20px 40px 20px;
         }
 
-        /* --- SCREEN 1: Incoming Call --- */
-        #screen-incoming { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        
-        .caller-info { text-align: center; color: #fff; margin-top: 20px; }
-        .caller-info h1 { font-size: 28px; font-weight: 400; margin-bottom: 10px; letter-spacing: 1px; }
-        .caller-info p { font-size: 16px; color: #00e676; animation: blink 1.5s infinite; }
-        
+        /* Caller Info & Badges */
+        .caller-info { text-align: center; color: #fff; margin-top: 20px; position: relative; }
+        .secure-badge { font-size: 11px; color: #00e676; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .caller-name { font-size: 32px; font-weight: 300; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .verified-icon { width: 20px; height: 20px; background: #0088cc; border-radius: 50%; color: white; font-size: 12px; display: flex; justify-content: center; align-items: center; }
+        .call-type { font-size: 16px; color: #ccc; margin-top: 5px; }
+
         .caller-avatar {
-            width: 120px; height: 120px; border-radius: 50%;
-            margin: 30px auto;
+            width: 130px; height: 130px; border-radius: 50%;
+            margin: 30px auto 10px auto;
             background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover;
-            border: 3px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 30px rgba(255, 42, 75, 0.4);
-            animation: pulse-avatar 2s infinite;
+            border: 2px solid #34c759;
+            box-shadow: 0 0 40px rgba(52, 199, 89, 0.4);
+            animation: pulse-avatar 1.5s infinite;
         }
 
-        .action-buttons { display: flex; justify-content: space-around; margin-bottom: 40px; }
-        .btn-call {
-            width: 70px; height: 70px; border-radius: 50%; border: none;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: transform 0.2s;
+        /* Fake Chat Bubble */
+        .chat-bubble {
+            background: rgba(255,255,255,0.9); color: #000;
+            padding: 10px 15px; border-radius: 20px; border-bottom-left-radius: 0;
+            display: inline-block; font-size: 14px; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            animation: popIn 0.5s ease forwards, float 3s infinite ease-in-out;
+            opacity: 0; transform: translateY(20px);
         }
-        .btn-call:active { transform: scale(0.9); }
-        .btn-decline { background-color: #ff3b30; box-shadow: 0 10px 20px rgba(255, 59, 48, 0.4); }
-        .btn-answer { background-color: #34c759; box-shadow: 0 10px 20px rgba(52, 199, 89, 0.4); animation: shake-answer 2.5s infinite; }
+
+        /* Action Buttons */
+        .action-area { display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        .warning-text { color: #ff3b30; font-size: 13px; font-weight: bold; animation: blink 1s infinite; }
         
+        .action-buttons { display: flex; justify-content: space-between; width: 100%; padding: 0 20px; }
+        .btn-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .btn-label { color: white; font-size: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        
+        .btn-call {
+            width: 75px; height: 75px; border-radius: 50%; border: none;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        }
+        .btn-decline { background: #ff3b30; }
+        .btn-answer { background: #34c759; animation: shake 2s infinite; }
         .icon { width: 35px; height: 35px; fill: white; }
 
-        /* --- SCREEN 2: Connecting --- */
-        #screen-connecting { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; color: #fff; }
-        .spinner {
-            border: 4px solid rgba(255,255,255,0.1); width: 50px; height: 50px;
-            border-radius: 50%; border-left-color: #34c759;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
-        }
-
-        /* --- SCREEN 3: Error & CTA (Smartlink) --- */
-        #screen-error { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; background: rgba(0,0,0,0.85); border-radius: 20px; padding: 30px; border: 1px solid rgba(255,42,75,0.3); backdrop-filter: blur(10px); margin: auto 10px; max-height: 450px; }
+        /* Error Screen */
+        #screen-error { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; background: rgba(15,15,20,0.95); border-radius: 24px; padding: 35px 25px; border: 1px solid rgba(255,42,75,0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8); backdrop-filter: blur(15px); margin: auto 15px; }
         
-        .error-icon { font-size: 50px; margin-bottom: 15px; }
-        .error-title { color: #ff3b30; font-size: 22px; margin-bottom: 15px; font-weight: bold; }
-        .error-desc { color: #ccc; font-size: 15px; margin-bottom: 30px; line-height: 1.5; }
+        .error-title { color: #fff; font-size: 24px; margin-bottom: 10px; font-weight: bold; }
+        .error-desc { color: #aaa; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
+        .highlight { color: #ff3b30; font-weight: bold; }
         
         .smartlink-btn {
             display: block; width: 100%; padding: 18px;
-            background: linear-gradient(135deg, #34c759, #28a745);
-            color: white; text-decoration: none; font-size: 16px;
-            font-weight: bold; border-radius: 30px; text-transform: uppercase;
-            box-shadow: 0 10px 25px rgba(52, 199, 89, 0.5);
-            animation: pulse-cta 1.5s infinite;
+            background: #34c759; color: white; text-decoration: none; font-size: 18px;
+            font-weight: bold; border-radius: 12px; text-transform: uppercase;
+            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.4);
+            animation: pulse-cta 1.5s infinite; margin-bottom: 15px;
         }
+        .guarantee { font-size: 12px; color: #666; display: flex; align-items: center; gap: 5px; justify-content: center; }
 
         /* Animations */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-avatar { 0% { transform: scale(1); box-shadow: 0 0 20px rgba(255,255,255,0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255,255,255,0.5); } 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,255,255,0.2); } }
-        @keyframes shake-answer { 0%, 100% { transform: rotate(0deg); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
-        @keyframes pulse-cta { 0% { transform: scale(1); box-shadow: 0 10px 25px rgba(52,199,89,0.4); } 50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(52,199,89,0.7); } 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(52,199,89,0.4); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes breathe { 0% { filter: blur(25px) brightness(0.3); } 100% { filter: blur(15px) brightness(0.4); } }
+        @keyframes pulse-avatar { 0% { box-shadow: 0 0 20px rgba(52, 199, 89, 0.4); } 50% { box-shadow: 0 0 50px rgba(52, 199, 89, 0.8); } 100% { box-shadow: 0 0 20px rgba(52, 199, 89, 0.4); } }
+        @keyframes shake { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-10px); } 50% { transform: translateY(0); } 75% { transform: translateY(-5px); } }
+        @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse-cta { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
+    <!-- OS Status Bar Trick -->
+    <div class="status-bar">
+        <span id="os-time">00:00</span>
+        <div class="status-right">
+            <span>HD</span> <span>📶</span> <span>🔋 84%</span>
+        </div>
+    </div>
+
     <div class="bg-stream"></div>
 
-    <div class="app-container">
+    <div class="app-container" id="main-ui">
         
-        <!-- Screen 1: Incoming Call -->
         <div id="screen-incoming">
             <div class="caller-info">
-                <h1>Private Caller</h1>
-                <p>Incoming Video Call...</p>
-                <div class="caller-avatar"></div>
-            </div>
-            
-            <div class="action-buttons">
-                <!-- Decline Button -->
-                <button class="btn-call btn-decline" onclick="declineCall()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
-                </button>
+                <div class="secure-badge">🔒 End-to-End Encrypted</div>
+                <div class="caller-name">Private Caller <span class="verified-icon">✓</span></div>
+                <div class="call-type">FaceTime Video...</div>
                 
-                <!-- Answer Button -->
-                <button class="btn-call btn-answer" onclick="acceptCall()">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- Screen 2: Connecting -->
-        <div id="screen-connecting">
-            <div class="spinner"></div>
-            <h2>Connecting...</h2>
-            <p style="margin-top: 10px; color: #888; font-size: 14px;">Establishing Secure P2P Video Link</p>
-        </div>
-
-        <!-- Screen 3: Error / The Trap -->
-        <div id="screen-error">
-            <div class="error-icon">⚠️</div>
-            <div class="error-title">Connection Blocked!</div>
-            <div class="error-desc">
-                Guest access is not allowed for private video calls. <br><br>
-                Please create a <b>Free Secure Profile</b> to verify your age and resume this live call immediately.
+                <div class="caller-avatar"></div>
+                <div class="chat-bubble">"Please answer... 🥺"</div>
             </div>
             
-            <!-- SMARTLINK BUTTON -->
-            <a href="https://vaai.la/bedjfha18" class="smartlink-btn">Create Free Profile</a>
-            <p style="margin-top: 15px; font-size: 11px; color: #666;">Takes less than 60 seconds.</p>
+            <div class="action-area">
+                <div class="warning-text">Call ends in <span id="call-timer">15</span>s...</div>
+                
+                <div class="action-buttons">
+                    <div class="btn-col">
+                        <button class="btn-call btn-decline" onclick="triggerTrap()">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
+                        </button>
+                        <span class="btn-label">Decline</span>
+                    </div>
+                    
+                    <div class="btn-col">
+                        <button class="btn-call btn-answer" onclick="triggerTrap()">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                        </button>
+                        <span class="btn-label">Accept</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-error">
+            <div class="error-title">Age Verification Required!</div>
+            <div class="error-desc">
+                The caller requires you to be <span class="highlight">18+</span> to join this private video room. <br><br>
+                Create a quick Free ID to verify your age and connect instantly.
+            </div>
+            
+            <a href="https://vaai.la/bedjfha18" class="smartlink-btn">Verify Age Now</a>
+            
+            <div class="guarantee">
+                🛡️ 100% Secure • No Hidden Fees
+            </div>
         </div>
 
     </div>
 
     <script>
-        function acceptCall() {
-            // Hide Screen 1, Show Screen 2 (Connecting)
-            document.getElementById('screen-incoming').style.display = 'none';
-            document.getElementById('screen-connecting').style.display = 'flex';
-            
-            // Wait 2.5 seconds to build suspense, then show Error
-            setTimeout(() => {
-                document.getElementById('screen-connecting').style.display = 'none';
-                document.getElementById('screen-error').style.display = 'flex';
-            }, 2500);
+        // Trick 1: Dynamic Local Time
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('os-time').textContent = `${hours}:${minutes}`;
         }
+        updateTime();
+        setInterval(updateTime, 60000);
 
-        function declineCall() {
-            // If they hit decline, force them to the error screen anyway (Marketer's trap)
+        // Trick 2: Auto-Countdown Urgency
+        let timeLeft = 15;
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('call-timer').textContent = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                triggerTrap(); // Force error screen if they wait too long
+            }
+        }, 1000);
+
+        // The Ultimate Trap Function
+        function triggerTrap() {
+            // Trick 3: Vibration API (Works on Android devices when clicked)
+            if (navigator.vibrate) { navigator.vibrate(200); }
+            
+            // Show Smartlink Error Screen
             document.getElementById('screen-incoming').style.display = 'none';
             document.getElementById('screen-error').style.display = 'flex';
         }
+
+        // Trick 4: Fullscreen Hack (when they click anywhere)
+        document.body.addEventListener('click', () => {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch((e) => {});
+            }
+        }, { once: true });
     </script>
 </body>
 </html>
