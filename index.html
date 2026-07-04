@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🔴 Live Private Video</title>
+    <title>🔴 Live VIP Video</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
@@ -31,7 +31,7 @@
             display: flex; justify-content: center; align-items: center; background: #111;
         }
         
-        /* IFRAME FOR GOOGLE DRIVE */
+        /* IFRAME FOR GOOGLE DRIVE (UPDATED LINK) */
         .drive-iframe {
             width: 100%; height: 100%; border: none; pointer-events: auto;
         }
@@ -40,7 +40,7 @@
         .play-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            background: rgba(0,0,0,0.3); z-index: 20; cursor: pointer;
+            background: rgba(0,0,0,0.4); z-index: 20; cursor: pointer;
         }
         .play-btn {
             width: 80px; height: 80px; background: rgba(255,0,85,0.9);
@@ -52,19 +52,19 @@
             border-left: 25px solid #fff; margin-left: 5px;
         }
 
-        /* THE LOCK POPUP (HIDDEN INITIALLY) */
+        /* THE LOCK POPUP */
         .lock-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 100;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: 100;
             flex-direction: column; justify-content: center; align-items: center; text-align: center;
             padding: 20px; animation: fadeIn 0.3s ease-out; cursor: pointer;
         }
         .lock-box {
-            background: #151515; border: 2px solid #ff00ff; padding: 30px 20px;
+            background: #111; border: 2px solid #00ffff; padding: 30px 20px;
             border-radius: 20px; max-width: 350px; width: 100%;
-            box-shadow: 0 10px 40px rgba(255, 0, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
         }
-        .lock-icon { font-size: 40px; margin-bottom: 10px; }
+        .lock-icon { font-size: 45px; margin-bottom: 10px; }
         .lock-title { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #ff0055; }
         .lock-desc { color: #ccc; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
         
@@ -85,14 +85,14 @@
 
     <div class="top-bar">
         <div class="live-btn">🔴 LIVE</div>
-        <div class="viewers" id="viewer-count">👁 5,201</div>
+        <div class="viewers" id="viewer-count">👁 6,104</div>
     </div>
 
     <div class="video-container" id="vid-container">
-        <!-- Google Drive Embed Link (Replaced /view with /preview for embedding) -->
-        <iframe class="drive-iframe" src="https://drive.google.com/file/d/1NAJ-6WJj0YW3kiAWe7vlVlVNMbX_7pfT/preview?autoplay=1" allow="autoplay"></iframe>
+        <!-- UPDATED Google Drive Embed Link -->
+        <iframe class="drive-iframe" src="https://drive.google.com/file/d/1NAJ-6WJj0YW3kiAWe7vlVlVNMbX_7pfT/preview" allow="autoplay"></iframe>
         
-        <!-- Fake Play Overlay that captures the first click -->
+        <!-- Fake Play Overlay -->
         <div class="play-overlay" id="play-trigger" onclick="startFiveSecondTimer()">
             <div class="play-btn"></div>
         </div>
@@ -102,22 +102,22 @@
     <div class="lock-screen" id="lock-screen" onclick="redirectToSmartlink()">
         <div class="lock-box">
             <div class="lock-icon">🔒</div>
-            <div class="lock-title">Free Preview Ended!</div>
-            <div class="lock-desc">This is a private VIP broadcast. Please create a free account to verify your age and continue watching live.</div>
+            <div class="lock-title">Preview Ended!</div>
+            <div class="lock-desc">The free preview is over. Please create a free account to verify your age and continue watching the full broadcast live.</div>
             <button class="create-acc-btn">Create Free Account 🚀</button>
         </div>
     </div>
 
     <script>
         // Viewer count simulation
-        let viewers = 5201;
+        let viewers = 6104;
         setInterval(() => {
-            viewers += Math.floor(Math.random() * 10) - 3;
+            viewers += Math.floor(Math.random() * 15) - 5;
             document.getElementById('viewer-count').innerText = `👁 ${viewers.toLocaleString()}`;
         }, 2000);
 
         function startFiveSecondTimer() {
-            // Remove the play overlay so the user can interact with the video if needed
+            // Remove the play overlay so the video is visible and playable
             document.getElementById('play-trigger').style.display = 'none';
             
             // Start the 5-second countdown
@@ -125,7 +125,7 @@
                 // Show the lock screen
                 document.getElementById('lock-screen').style.display = 'flex';
                 
-                // Optional: Stop the iframe from playing in the background by removing its source
+                // Stop the video from playing in the background by clearing the iframe source
                 const iframe = document.querySelector('.drive-iframe');
                 iframe.src = ""; 
                 
