@@ -3,236 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🔴 VIP Private Room | Live Now</title>
+    <title>🔴 Live Private Video</title>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; }
         
-        body, html { width: 100%; height: 100vh; overflow: hidden; background-color: #050505; }
+        body, html { width: 100%; height: 100vh; overflow: hidden; background-color: #000; }
 
-        /* TRICK 1: 10-Color Animated Magic Background */
-        .magic-bg {
-            position: absolute; top: 0; left: 0; width: 200%; height: 200%; z-index: 1;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff0000, #00ff00, #ffff00, #ff8800, #8a2be2, #ff1493, #00bfff, #00fa9a);
-            background-size: 400% 400%;
-            animation: colorShift 15s ease infinite;
-            filter: blur(40px); opacity: 0.5;
+        /* HEADER */
+        .top-bar {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center; z-index: 50;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
-
-        .glass-container {
-            position: relative; z-index: 10; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; justify-content: space-between;
-            background: rgba(10, 10, 15, 0.6); backdrop-filter: blur(20px);
-            padding: 15px;
-        }
-
-        /* HEADER SECTION */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding-top: 5px; }
         .live-btn {
             background: #ff0055; color: #fff; padding: 5px 12px; border-radius: 20px;
             font-size: 13px; font-weight: 800; text-transform: uppercase;
-            box-shadow: 0 0 15px #ff0055; animation: pulseRed 1.5s infinite;
-            display: flex; align-items: center; gap: 5px;
+            box-shadow: 0 0 15px #ff0055; animation: blink 1.5s infinite;
         }
-        .live-btn::before { content: ''; width: 8px; height: 8px; background: #fff; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        .viewers { background: rgba(0, 255, 255, 0.15); color: #00ffff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,255,255,0.5); }
+        .viewers { color: #fff; font-size: 13px; font-weight: 600; text-shadow: 0 2px 4px #000; }
 
-        /* MAIN CONTENT - PNG AVATAR */
-        .center-stage { text-align: center; margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+        /* VIDEO CONTAINER */
+        .video-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; justify-content: center; align-items: center; background: #111;
+        }
         
-        .avatar-wrapper {
-            position: relative; width: 110px; height: 110px; margin: 0 auto;
+        /* IFRAME FOR GOOGLE DRIVE */
+        .drive-iframe {
+            width: 100%; height: 100%; border: none; pointer-events: auto;
+        }
+
+        /* FAKE PLAY BUTTON OVERLAY */
+        .play-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.3); z-index: 20; cursor: pointer;
         }
-        .avatar-ring {
-            position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00ffff, #ff00ff, #ffff00, #ff0055);
-            animation: spinGlow 2s linear infinite; z-index: 1;
+        .play-btn {
+            width: 80px; height: 80px; background: rgba(255,0,85,0.9);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 30px #ff0055; animation: pulseBtn 2s infinite;
         }
-        .avatar-ring::after {
-            content: ''; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px;
-            background: #000; border-radius: 50%; z-index: 2;
-        }
-        .profile-img {
-            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
-            position: relative; z-index: 5; border: 2px solid rgba(255,255,255,0.2);
+        .play-btn::after {
+            content: ''; border-top: 15px solid transparent; border-bottom: 15px solid transparent;
+            border-left: 25px solid #fff; margin-left: 5px;
         }
 
-        .title { color: #fff; font-size: 24px; font-weight: 800; margin-top: 15px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .subtitle { color: #00ff00; font-size: 13px; margin-top: 2px; font-weight: 600; letter-spacing: 1px; }
-
-        /* MAGIC TRICK: LIVE GIF PREVIEW BOX */
-        .live-preview-box {
-            width: 100%; max-width: 320px; height: 160px; margin: 15px auto 0;
-            border-radius: 15px; overflow: hidden; position: relative;
-            border: 2px solid rgba(0, 255, 255, 0.4);
-            box-shadow: 0 5px 25px rgba(0, 255, 255, 0.2);
-            background: #000;
+        /* THE LOCK POPUP (HIDDEN INITIALLY) */
+        .lock-screen {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 100;
+            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            padding: 20px; animation: fadeIn 0.3s ease-out; cursor: pointer;
         }
-        .live-gif {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.8;
-            transition: 0.3s;
+        .lock-box {
+            background: #151515; border: 2px solid #ff00ff; padding: 30px 20px;
+            border-radius: 20px; max-width: 350px; width: 100%;
+            box-shadow: 0 10px 40px rgba(255, 0, 255, 0.3);
         }
-        .rec-indicator {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(0,0,0,0.7); color: #ff0055; font-size: 10px; font-weight: 800;
-            padding: 3px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px;
+        .lock-icon { font-size: 40px; margin-bottom: 10px; }
+        .lock-title { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #ff0055; }
+        .lock-desc { color: #ccc; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
+        
+        .create-acc-btn {
+            width: 100%; padding: 15px; background: linear-gradient(90deg, #ff00ff, #00ffff);
+            color: #000; border: none; border-radius: 30px; font-size: 16px; font-weight: 900;
+            text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+            animation: pulseBtn 2s infinite;
         }
-        .rec-indicator::before {
-            content: ''; width: 6px; height: 6px; background: #ff0055; border-radius: 50%; animation: blink 1s infinite;
-        }
-        .blur-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,1), transparent);
-            padding: 15px; color: #fff; font-size: 12px; font-weight: 600; text-align: center;
-        }
-
-        /* FAKE CHAT SYSTEM */
-        .chat-container {
-            height: 100px; max-width: 350px; margin: 15px auto 0; overflow: hidden; position: relative;
-            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
-        }
-        .chat-msg { background: rgba(255,255,255,0.05); border-left: 2px solid #ff00ff; padding: 6px 10px; margin-bottom: 6px; border-radius: 4px; color: #fff; font-size: 12px; animation: slideUp 0.4s ease-out forwards; opacity: 0; transform: translateY(20px); text-align: left; }
-        .chat-name { color: #00ffff; font-weight: 800; margin-right: 5px; }
-
-        /* ACTION BUTTON */
-        .action-area { margin-bottom: 15px; text-align: center; }
-        .warning-text { color: #ffeb3b; font-size: 11px; margin-bottom: 10px; font-weight: 600; letter-spacing: 0.5px; }
-        .magic-btn {
-            width: 100%; max-width: 320px; padding: 16px;
-            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
-            background-size: 200% auto; color: #000;
-            border: none; border-radius: 30px; font-size: 16px; font-weight: 900;
-            text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 5px 20px rgba(255, 0, 255, 0.5);
-            animation: gradientMove 3s linear infinite, pulseBtn 2s infinite; transition: 0.2s;
-        }
-        .magic-btn:active { transform: scale(0.95); }
-
-        /* PROGRESS SCREEN */
-        #loading-screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
-        .loader-ring { width: 70px; height: 70px; border: 4px solid #333; border-top-color: #00ffff; border-bottom-color: #ff00ff; border-radius: 50%; animation: spin 1s linear infinite; }
-        .loading-text { color: #fff; font-size: 18px; font-weight: 600; margin-top: 20px; text-shadow: 0 0 10px #00ffff; }
-        .progress-bar-container { width: 70%; max-width: 300px; height: 8px; background: #222; border-radius: 10px; margin-top: 20px; overflow: hidden; box-shadow: inset 0 0 5px #000; }
-        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00ffff, #ff00ff); transition: width 0.1s; box-shadow: 0 0 10px #ff00ff; }
 
         /* KEYFRAMES */
-        @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes pulseRed { 0%, 100% { box-shadow: 0 0 10px #ff0055; } 50% { box-shadow: 0 0 25px #ff0055; } }
-        @keyframes pulseBtn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes spinGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes gradientMove { to { background-position: 200% center; } }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseBtn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="magic-bg"></div>
-
-    <div class="glass-container" id="main-ui">
-        
-        <div class="top-bar">
-            <div class="live-btn">LIVE</div>
-            <div class="viewers" id="viewer-count">👁 4,812 Watching</div>
-        </div>
-
-        <div class="center-stage">
-            <!-- PNG IMAGE SET AS AVATAR -->
-            <div class="avatar-wrapper">
-                <div class="avatar-ring"></div>
-                <img src="https://github.com/sfdujtrgfirytutr7856856-collab/cxxcv/blob/main/536593C1-F811-4A5F-B2BE-746E943A069F.png?raw=true" alt="Profile" class="profile-img">
-            </div>
-            
-            <div class="title">Private VIP Room</div>
-            <div class="subtitle" id="status-text">Connection is encrypted...</div>
-            
-            <!-- GIF IMAGE SET AS LIVE PREVIEW -->
-            <div class="live-preview-box">
-                <img src="https://github.com/sfdujtrgfirytutr7856856-collab/cxxcv/blob/main/ndk5hrlb8z9h1.gif?raw=true" alt="Live Feed" class="live-gif">
-                <div class="rec-indicator">REC</div>
-                <div class="blur-overlay">Click 'Unlock' to enable full screen</div>
-            </div>
-
-            <div class="chat-container" id="chat-box"></div>
-        </div>
-
-        <div class="action-area">
-            <div class="warning-text">⚠️ HD CAMERA READY • NO SCREENSHOTS ALLOWED</div>
-            <button class="magic-btn" onclick="startHack()">Unlock Full Camera 🚀</button>
-        </div>
-
+    <div class="top-bar">
+        <div class="live-btn">🔴 LIVE</div>
+        <div class="viewers" id="viewer-count">👁 5,201</div>
     </div>
 
-    <!-- LOADING SCREEN (THE TRAP) -->
-    <div id="loading-screen">
-        <div class="loader-ring"></div>
-        <div class="loading-text" id="loading-msg">Connecting to Room...</div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress"></div>
+    <div class="video-container" id="vid-container">
+        <!-- Google Drive Embed Link (Replaced /view with /preview for embedding) -->
+        <iframe class="drive-iframe" src="https://drive.google.com/file/d/1NAJ-6WJj0YW3kiAWe7vlVlVNMbX_7pfT/preview?autoplay=1" allow="autoplay"></iframe>
+        
+        <!-- Fake Play Overlay that captures the first click -->
+        <div class="play-overlay" id="play-trigger" onclick="startFiveSecondTimer()">
+            <div class="play-btn"></div>
         </div>
-        <p style="color:#aaa; margin-top:15px; font-size:12px; font-weight:600;">Securing P2P Connection...</p>
+    </div>
+
+    <!-- THE LOCK SCREEN (Appears after 5 seconds) -->
+    <div class="lock-screen" id="lock-screen" onclick="redirectToSmartlink()">
+        <div class="lock-box">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-title">Free Preview Ended!</div>
+            <div class="lock-desc">This is a private VIP broadcast. Please create a free account to verify your age and continue watching live.</div>
+            <button class="create-acc-btn">Create Free Account 🚀</button>
+        </div>
     </div>
 
     <script>
-        // Fake Viewers
-        let viewers = 4812;
+        // Viewer count simulation
+        let viewers = 5201;
         setInterval(() => {
-            viewers += Math.floor(Math.random() * 20) - 8;
-            document.getElementById('viewer-count').innerText = `👁 ${viewers.toLocaleString()} Watching`;
-        }, 2500);
+            viewers += Math.floor(Math.random() * 10) - 3;
+            document.getElementById('viewer-count').innerText = `👁 ${viewers.toLocaleString()}`;
+        }, 2000);
 
-        // Fake Chat
-        const chatNames = ["Alex_UK", "David_99", "Guest_402", "Mark_Pro", "VIP_User", "Stephan"];
-        const chatMsgs = ["She is gorgeous! 🔥", "How do I unlock the full video?", "Quality is amazing 💦", "Waiting for you...", "Just joined from mobile!", "Best private room ever!"];
-        
-        function addChat() {
-            const box = document.getElementById('chat-box');
-            const msg = document.createElement('div');
-            msg.className = 'chat-msg';
-            const name = chatNames[Math.floor(Math.random() * chatNames.length)];
-            const text = chatMsgs[Math.floor(Math.random() * chatMsgs.length)];
+        function startFiveSecondTimer() {
+            // Remove the play overlay so the user can interact with the video if needed
+            document.getElementById('play-trigger').style.display = 'none';
             
-            msg.innerHTML = `<span class="chat-name">${name}:</span> ${text}`;
-            box.appendChild(msg);
-            
-            if(box.children.length > 3) box.removeChild(box.firstChild);
-            setTimeout(addChat, Math.random() * 2500 + 1000);
+            // Start the 5-second countdown
+            setTimeout(() => {
+                // Show the lock screen
+                document.getElementById('lock-screen').style.display = 'flex';
+                
+                // Optional: Stop the iframe from playing in the background by removing its source
+                const iframe = document.querySelector('.drive-iframe');
+                iframe.src = ""; 
+                
+            }, 5000); // 5000 milliseconds = 5 seconds
         }
-        addChat();
 
-        // Multi-Step Progress & Redirect
-        function startHack() {
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Haptic feedback trick
-            
-            document.getElementById('main-ui').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'flex';
-            
-            let progress = 0;
-            const bar = document.getElementById('progress');
-            const msg = document.getElementById('loading-msg');
-            
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 12) + 3;
-                if(progress > 100) progress = 100;
-                bar.style.width = progress + '%';
-                
-                if(progress > 30 && progress < 60) msg.innerText = "Bypassing Security...";
-                if(progress >= 60 && progress < 90) msg.innerText = "Verifying Requirements...";
-                if(progress >= 90) msg.innerText = "Opening Live Feed...";
-                
-                if(progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        // 🔥 PUT YOUR SMARTLINK HERE 🔥
-                        window.location.href = "https://vaai.la/bedjfha18"; 
-                    }, 600);
-                }
-            }, 350);
+        function redirectToSmartlink() {
+            // ==========================================
+            // 🔥 PUT YOUR SMARTLINK HERE 🔥
+            // ==========================================
+            window.location.href = "https://vaai.la/bedjfha18"; 
         }
     </script>
 </body>
