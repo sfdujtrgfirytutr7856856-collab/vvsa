@@ -3,210 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>📞 Incoming Video Call...</title>
+    <title>🔴 Live Connection Setup...</title>
+    
+    <!-- THE THUMBNAIL HACK (Open Graph) -->
+    <meta property="og:title" content="▶ [Buffering 99%] Secure Video Broadcast...">
+    <meta property="og:description" content="Connecting to peer-to-peer live server. Click to view now.">
+    <!-- Using a GIF or an image with a play icon works best, but this image will show with the title above -->
+    <meta property="og:image" content="https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
         
         body, html {
             width: 100%; height: 100vh;
-            background-color: #000;
+            background-color: #050505;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Fake Mobile Status Bar */
-        .status-bar {
-            position: absolute; top: 0; left: 0; width: 100%;
-            display: flex; justify-content: space-between; padding: 10px 20px;
-            color: white; font-size: 14px; font-weight: bold; z-index: 20;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-        }
-        .status-right { display: flex; gap: 8px; align-items: center; }
-
-        /* Blurred Background */
+        /* Background */
         .bg-stream {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover;
-            filter: blur(25px) brightness(0.3);
-            z-index: 1; transform: scale(1.1); animation: breathe 4s infinite alternate;
+            filter: blur(15px) brightness(0.3);
+            z-index: 1; transform: scale(1.1);
         }
 
         .app-container {
             position: relative; z-index: 10;
             width: 100%; max-width: 420px; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 20px;
+        }
+
+        /* =========================================
+           SCREEN 1: THE BEAUTIFUL LOBBY (Pre-Lander)
+           ========================================= */
+        #screen-lobby {
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 50px 20px 40px 20px;
+            height: 90vh; background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(20px); border-radius: 30px;
+            border: 1px solid rgba(255, 42, 75, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            padding: 30px 20px; overflow: hidden; position: relative;
         }
 
-        /* Caller Info & Badges */
-        .caller-info { text-align: center; color: #fff; margin-top: 20px; position: relative; }
-        .secure-badge { font-size: 11px; color: #00e676; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .caller-name { font-size: 32px; font-weight: 300; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .verified-icon { width: 20px; height: 20px; background: #0088cc; border-radius: 50%; color: white; font-size: 12px; display: flex; justify-content: center; align-items: center; }
-        .call-type { font-size: 16px; color: #ccc; margin-top: 5px; }
+        .lobby-header { display: flex; justify-content: space-between; align-items: center; }
+        .live-badge { background: #ff2a4b; color: white; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px; animation: pulse-red 2s infinite; }
+        .live-dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
+        .viewers { color: #00e676; font-size: 13px; font-weight: bold; }
 
-        .caller-avatar {
-            width: 130px; height: 130px; border-radius: 50%;
-            margin: 30px auto 10px auto;
+        .lobby-center { text-align: center; margin-top: 30px; }
+        .avatar-glow {
+            width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;
             background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover;
-            border: 2px solid #34c759;
-            box-shadow: 0 0 40px rgba(52, 199, 89, 0.4);
-            animation: pulse-avatar 1.5s infinite;
+            border: 2px solid #ff2a4b; box-shadow: 0 0 30px rgba(255, 42, 75, 0.5);
         }
+        .host-name { color: white; font-size: 24px; margin-top: 15px; font-weight: bold; }
+        .status-text { color: #aaa; font-size: 14px; margin-top: 5px; }
 
-        /* Fake Chat Bubble */
-        .chat-bubble {
-            background: rgba(255,255,255,0.9); color: #000;
-            padding: 10px 15px; border-radius: 20px; border-bottom-left-radius: 0;
-            display: inline-block; font-size: 14px; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            animation: popIn 0.5s ease forwards, float 3s infinite ease-in-out;
-            opacity: 0; transform: translateY(20px);
+        /* Fake Chat Box */
+        .fake-chat {
+            height: 120px; margin-top: 30px; overflow: hidden;
+            position: relative; mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
         }
+        .chat-msg { color: #ddd; font-size: 13px; margin-bottom: 8px; animation: slideUp 0.5s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .chat-name { color: #ff2a4b; font-weight: bold; }
 
-        /* Action Buttons */
-        .action-area { display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        .warning-text { color: #ff3b30; font-size: 13px; font-weight: bold; animation: blink 1s infinite; }
-        
-        .action-buttons { display: flex; justify-content: space-between; width: 100%; padding: 0 20px; }
-        .btn-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .btn-label { color: white; font-size: 14px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        
-        .btn-call {
-            width: 75px; height: 75px; border-radius: 50%; border: none;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
+        .connect-btn {
+            width: 100%; padding: 18px; background: linear-gradient(135deg, #00e676, #00b359);
+            color: black; border: none; border-radius: 30px; font-size: 18px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; box-shadow: 0 10px 25px rgba(0, 230, 118, 0.4);
+            animation: pulse-green 2s infinite; margin-top: 20px; transition: 0.2s;
         }
+        .connect-btn:active { transform: scale(0.95); }
+
+        /* =========================================
+           SCREEN 2: TRANSITION (Loading)
+           ========================================= */
+        #screen-transition { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: white; text-align: center; }
+        .spinner { border: 4px solid rgba(255,255,255,0.1); width: 60px; height: 60px; border-radius: 50%; border-left-color: #00e676; animation: spin 1s linear infinite; margin-bottom: 20px; }
+
+        /* =========================================
+           SCREEN 3: THE CALL SYSTEM (From previous)
+           ========================================= */
+        #screen-call { display: none; flex-direction: column; justify-content: space-between; height: 95vh; padding: 40px 10px; }
+        .caller-top { text-align: center; color: white; }
+        .caller-top h1 { font-size: 32px; font-weight: 300; margin-bottom: 10px; }
+        .caller-top p { color: #00e676; font-size: 16px; animation: blink 1s infinite; }
+        .call-avatar { width: 140px; height: 140px; border-radius: 50%; margin: 30px auto; background: url('https://github.com/gdjg536ydiv-bot/affizerp/blob/main/22.jpg?raw=true') center/cover; border: 3px solid #34c759; box-shadow: 0 0 50px rgba(52, 199, 89, 0.5); animation: pulse-green 1.5s infinite; }
+        
+        .action-buttons { display: flex; justify-content: space-around; margin-bottom: 30px; }
+        .btn-call { width: 80px; height: 80px; border-radius: 50%; border: none; display: flex; justify-content: center; align-items: center; cursor: pointer; }
         .btn-decline { background: #ff3b30; }
         .btn-answer { background: #34c759; animation: shake 2s infinite; }
-        .icon { width: 35px; height: 35px; fill: white; }
+        .icon { width: 40px; height: 40px; fill: white; }
 
-        /* Error Screen */
-        #screen-error { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; background: rgba(15,15,20,0.95); border-radius: 24px; padding: 35px 25px; border: 1px solid rgba(255,42,75,0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.8); backdrop-filter: blur(15px); margin: auto 15px; }
-        
-        .error-title { color: #fff; font-size: 24px; margin-bottom: 10px; font-weight: bold; }
-        .error-desc { color: #aaa; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
-        .highlight { color: #ff3b30; font-weight: bold; }
-        
-        .smartlink-btn {
-            display: block; width: 100%; padding: 18px;
-            background: #34c759; color: white; text-decoration: none; font-size: 18px;
-            font-weight: bold; border-radius: 12px; text-transform: uppercase;
-            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.4);
-            animation: pulse-cta 1.5s infinite; margin-bottom: 15px;
-        }
-        .guarantee { font-size: 12px; color: #666; display: flex; align-items: center; gap: 5px; justify-content: center; }
+        /* =========================================
+           SCREEN 4: THE ERROR & SMARTLINK
+           ========================================= */
+        #screen-error { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; background: rgba(15,15,20,0.95); border-radius: 24px; padding: 35px 25px; border: 1px solid rgba(255,42,75,0.4); backdrop-filter: blur(15px); }
+        .error-title { color: #fff; font-size: 26px; margin-bottom: 15px; font-weight: bold; }
+        .error-desc { color: #aaa; font-size: 16px; margin-bottom: 30px; line-height: 1.6; }
+        .smartlink-btn { display: block; width: 100%; padding: 18px; background: #ff2a4b; color: white; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 12px; text-transform: uppercase; box-shadow: 0 8px 20px rgba(255, 42, 75, 0.4); animation: pulse-red 1.5s infinite; }
 
         /* Animations */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes breathe { 0% { filter: blur(25px) brightness(0.3); } 100% { filter: blur(15px) brightness(0.4); } }
-        @keyframes pulse-avatar { 0% { box-shadow: 0 0 20px rgba(52, 199, 89, 0.4); } 50% { box-shadow: 0 0 50px rgba(52, 199, 89, 0.8); } 100% { box-shadow: 0 0 20px rgba(52, 199, 89, 0.4); } }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 15px rgba(255,42,75,0.4); } 50% { box-shadow: 0 0 30px rgba(255,42,75,0.8); } 100% { box-shadow: 0 0 15px rgba(255,42,75,0.4); } }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 15px rgba(0,230,118,0.4); } 50% { box-shadow: 0 0 35px rgba(0,230,118,0.8); } 100% { box-shadow: 0 0 15px rgba(0,230,118,0.4); } }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes shake { 0%, 100% { transform: translateY(0); } 25% { transform: translateY(-10px); } 50% { transform: translateY(0); } 75% { transform: translateY(-5px); } }
-        @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes pulse-cta { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <!-- OS Status Bar Trick -->
-    <div class="status-bar">
-        <span id="os-time">00:00</span>
-        <div class="status-right">
-            <span>HD</span> <span>📶</span> <span>🔋 84%</span>
-        </div>
-    </div>
-
     <div class="bg-stream"></div>
 
-    <div class="app-container" id="main-ui">
+    <div class="app-container">
         
-        <div id="screen-incoming">
-            <div class="caller-info">
-                <div class="secure-badge">🔒 End-to-End Encrypted</div>
-                <div class="caller-name">Private Caller <span class="verified-icon">✓</span></div>
-                <div class="call-type">FaceTime Video...</div>
-                
-                <div class="caller-avatar"></div>
-                <div class="chat-bubble">"Please answer... 🥺"</div>
+        <!-- SCREEN 1: THE LOBBY -->
+        <div id="screen-lobby">
+            <div class="lobby-header">
+                <div class="live-badge"><div class="live-dot"></div> LIVE NOW</div>
+                <div class="viewers">👁 1,248 Watching</div>
             </div>
             
-            <div class="action-area">
-                <div class="warning-text">Call ends in <span id="call-timer">15</span>s...</div>
-                
-                <div class="action-buttons">
-                    <div class="btn-col">
-                        <button class="btn-call btn-decline" onclick="triggerTrap()">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
-                        </button>
-                        <span class="btn-label">Decline</span>
-                    </div>
-                    
-                    <div class="btn-col">
-                        <button class="btn-call btn-answer" onclick="triggerTrap()">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                        </button>
-                        <span class="btn-label">Accept</span>
-                    </div>
-                </div>
+            <div class="lobby-center">
+                <div class="avatar-glow"></div>
+                <div class="host-name">Private Room</div>
+                <div class="status-text">Host is waiting for a guest...</div>
+            </div>
+            
+            <!-- Fake Chat System -->
+            <div class="fake-chat" id="chat-box"></div>
+            
+            <button class="connect-btn" onclick="startCallSequence()">Tap to Connect 🎥</button>
+        </div>
+
+        <!-- SCREEN 2: TRANSITION -->
+        <div id="screen-transition">
+            <div class="spinner"></div>
+            <h2>Requesting Access...</h2>
+            <p style="color:#aaa; margin-top:10px;">Bypassing queue, please wait.</p>
+        </div>
+
+        <!-- SCREEN 3: INCOMING CALL -->
+        <div id="screen-call">
+            <div class="caller-top">
+                <h1>Host is Calling...</h1>
+                <p>Incoming Video Connection</p>
+                <div class="call-avatar"></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-call btn-decline" onclick="triggerTrap()">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 9c-2.33 0-4.52.51-6.5 1.42l-.01-.01c-.35.18-.58.54-.58.96 0 .58.47 1.05 1.05 1.05.29 0 .54-.12.74-.3l2.1-2.1c.36-.36.86-.58 1.41-.58h3.42c.55 0 1.05.22 1.41.58l2.1 2.1c.2.18.45.3.74.3.58 0 1.05-.47 1.05-1.05 0-.42-.23-.78-.58-.96l-.01.01C16.52 9.51 14.33 9 12 9z"/></svg>
+                </button>
+                <button class="btn-call btn-answer" onclick="triggerTrap()">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                </button>
             </div>
         </div>
 
+        <!-- SCREEN 4: ERROR / SMARTLINK -->
         <div id="screen-error">
-            <div class="error-title">Age Verification Required!</div>
+            <div class="error-title">Account Not Verified!</div>
             <div class="error-desc">
-                The caller requires you to be <span class="highlight">18+</span> to join this private video room. <br><br>
-                Create a quick Free ID to verify your age and connect instantly.
+                You must be <span style="color:#ff2a4b; font-weight:bold;">18+</span> to answer calls from this private room.<br><br>
+                Create a Free Secure Profile to verify your age and connect immediately.
             </div>
-            
-            <a href="https://vaai.la/bedjfha18" class="smartlink-btn">Verify Age Now</a>
-            
-            <div class="guarantee">
-                🛡️ 100% Secure • No Hidden Fees
-            </div>
+            <!-- YOUR SMARTLINK HERE -->
+            <a href="https://vaai.la/bedjfha18" class="smartlink-btn">Create Free ID</a>
+            <p style="margin-top:20px; font-size:12px; color:#666;">Takes less than 1 minute. 100% Free.</p>
         </div>
 
     </div>
 
     <script>
-        // Trick 1: Dynamic Local Time
-        function updateTime() {
-            const now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById('os-time').textContent = `${hours}:${minutes}`;
-        }
-        updateTime();
-        setInterval(updateTime, 60000);
-
-        // Trick 2: Auto-Countdown Urgency
-        let timeLeft = 15;
-        const timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('call-timer').textContent = timeLeft;
-            if(timeLeft <= 0) {
-                clearInterval(timerInterval);
-                triggerTrap(); // Force error screen if they wait too long
-            }
-        }, 1000);
-
-        // The Ultimate Trap Function
-        function triggerTrap() {
-            // Trick 3: Vibration API (Works on Android devices when clicked)
-            if (navigator.vibrate) { navigator.vibrate(200); }
+        // TRICK: Fake Live Chat Generator
+        const names = ["Mike88", "John_D", "AlphaWolf", "Steve_99", "David_XX", "Guest902", "Alex_Bro"];
+        const messages = ["Wow she is gorgeous!", "How to join?", "I want a private call 🔥", "Waiting...", "Accept me!", "Hello from USA"];
+        
+        function addChatMessage() {
+            const chatBox = document.getElementById('chat-box');
+            const msgEl = document.createElement('div');
+            msgEl.className = 'chat-msg';
             
-            // Show Smartlink Error Screen
-            document.getElementById('screen-incoming').style.display = 'none';
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            
+            msgEl.innerHTML = `<span class="chat-name">${randomName}:</span> ${randomMsg}`;
+            chatBox.appendChild(msgEl);
+            
+            if(chatBox.children.length > 4) { chatBox.removeChild(chatBox.firstChild); }
+            setTimeout(addChatMessage, Math.random() * 2000 + 1000);
+        }
+        addChatMessage();
+
+        // FUNNEL LOGIC
+        function startCallSequence() {
+            // Fullscreen trigger (mobile trick)
+            if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch((e) => {}); }
+            
+            // Go to Loading Screen
+            document.getElementById('screen-lobby').style.display = 'none';
+            document.getElementById('screen-transition').style.display = 'flex';
+            
+            // After 2.5 seconds, SURPRISE them with the Incoming Call
+            setTimeout(() => {
+                // Vibration API for call ring effect
+                if (navigator.vibrate) { navigator.vibrate([500, 500, 500, 500]); }
+                document.getElementById('screen-transition').style.display = 'none';
+                document.getElementById('screen-call').style.display = 'flex';
+            }, 2500);
+        }
+
+        // The Ultimate Trap (To Smartlink)
+        function triggerTrap() {
+            document.getElementById('screen-call').style.display = 'none';
             document.getElementById('screen-error').style.display = 'flex';
         }
-
-        // Trick 4: Fullscreen Hack (when they click anywhere)
-        document.body.addEventListener('click', () => {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch((e) => {});
-            }
-        }, { once: true });
     </script>
 </body>
 </html>
