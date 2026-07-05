@@ -2,218 +2,169 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🔴 VIP Private Live Call</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Private Chat</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #0b1121;
+            color: white;
+            overflow: hidden; 
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; }
+        .dashboard-blur {
+            width: 100vw;
+            height: 100vh;
+            background-image: url('image_0f43c1.png');
+            background-color: #0b1121;
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px); 
+            transition: filter 0.5s ease;
+        }
+
+        .fake-call-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer; 
+        }
+
+        .caller-info {
+            text-align: center;
+            margin-bottom: 50px;
+        }
         
-        body, html { width: 100%; height: 100vh; overflow: hidden; background-color: #050505; }
-
-        /* THE 10-COLOR MAGIC BACKGROUND */
-        .magic-bg {
-            position: absolute; top: 0; left: 0; width: 200%; height: 200%; z-index: 1;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff0000, #00ff00, #ffff00, #ff8800, #8a2be2, #ff1493, #00bfff, #00fa9a);
-            background-size: 400% 400%;
-            animation: colorShift 15s ease infinite;
-            filter: blur(40px); opacity: 0.55;
+        .caller-info img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #25D366;
+            box-shadow: 0 0 20px #25D366;
+            animation: pulse 1.5s infinite; 
         }
-
-        .glass-container {
-            position: relative; z-index: 10; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; justify-content: flex-start;
-            background: rgba(10, 10, 15, 0.7); backdrop-filter: blur(15px);
-            padding: 10px;
-        }
-
-        /* HEADER SECTION */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px; }
-        .live-btn {
-            background: #ff0055; color: #fff; padding: 5px 12px; border-radius: 20px;
-            font-size: 13px; font-weight: 800; text-transform: uppercase;
-            box-shadow: 0 0 15px #ff0055; display: flex; align-items: center; gap: 5px;
-        }
-        .live-btn::before { content: ''; width: 8px; height: 8px; background: #fff; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        .viewers { background: rgba(0, 255, 255, 0.15); color: #00ffff; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(0,255,255,0.5); }
-
-        /* PROFILE AVATAR (PNG IMAGE) */
-        .profile-header { text-align: center; margin-top: 5px; margin-bottom: 15px; }
-        .avatar-wrapper { position: relative; width: 80px; height: 80px; margin: 0 auto; display: flex; justify-content: center; align-items: center; }
-        .avatar-ring {
-            position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px;
-            border-radius: 50%; background: linear-gradient(135deg, #00ffff, #ff00ff, #ffff00, #ff0055);
-            animation: spinGlow 2s linear infinite; z-index: 1;
-        }
-        .profile-img { width: 74px; height: 74px; border-radius: 50%; object-fit: cover; position: relative; z-index: 5; border: 2px solid #000; }
-        .title { color: #fff; font-size: 18px; font-weight: 800; margin-top: 8px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
-        /* MASTERPIECE: VIDEO & GIF CONTAINER */
-        .master-stage {
-            position: relative; width: 100%; max-width: 400px; height: 60vh; margin: 0 auto;
-            border-radius: 15px; border: 2px solid rgba(0, 255, 255, 0.4);
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
-            /* CLIPPING HACK: Hide everything outside this box */
-            overflow: hidden; background: #000;
-        }
-
-        /* DRIVE VIDEO HACK (Hiding the 22 sec time bar) */
-        .drive-iframe {
-            position: absolute; top: 0; left: 0;
-            width: 100%; 
-            /* HACK: Make height 70px larger than container to push the bottom controls out of view */
-            height: calc(100% + 70px); 
-            border: none; pointer-events: auto;
-        }
-
-        /* PICTURE-IN-PICTURE (THE GIF IMAGE) */
-        .pip-gif {
-            position: absolute; bottom: 15px; right: 15px;
-            width: 90px; height: 120px; border-radius: 10px;
-            border: 2px solid #ff00ff; box-shadow: 0 0 15px rgba(255,0,255,0.5);
-            overflow: hidden; z-index: 30; background: #111;
-        }
-        .pip-gif img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .rec-dot {
-            position: absolute; top: 5px; right: 5px;
-            width: 8px; height: 8px; background: #ff0055; border-radius: 50%;
-            animation: blink 1s infinite; box-shadow: 0 0 8px #ff0055;
-        }
-
-        /* FAKE PLAY OVERLAY (Triggers the 5-sec logic) */
-        .play-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 40; cursor: pointer;
-        }
-        .play-btn {
-            width: 70px; height: 70px; background: rgba(255,0,85,0.9); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 0 30px #ff0055; animation: pulseBtn 2s infinite; margin-bottom: 15px;
-        }
-        .play-btn::after {
-            content: ''; border-top: 12px solid transparent; border-bottom: 12px solid transparent;
-            border-left: 20px solid #fff; margin-left: 5px;
-        }
-        .tap-text { color: #fff; font-size: 16px; font-weight: 800; text-shadow: 0 2px 5px #000; animation: pulseBtn 2s infinite; }
-
-        /* THE LOCK POPUP (Appears after 5s) */
-        .lock-screen {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(15px); z-index: 100;
-            flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            padding: 20px; animation: fadeIn 0.3s ease-out; cursor: pointer;
-        }
-        .lock-box {
-            background: #111; border: 2px solid #00ffff; padding: 30px 20px;
-            border-radius: 20px; max-width: 350px; width: 100%;
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.3);
-        }
-        .lock-icon { font-size: 45px; margin-bottom: 10px; }
-        .lock-title { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 10px; color: #ff0055; }
-        .lock-desc { color: #ccc; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
         
-        .create-acc-btn {
-            width: 100%; padding: 15px; background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff); background-size: 200%;
-            color: #000; border: none; border-radius: 30px; font-size: 16px; font-weight: 900;
-            text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
-            animation: gradientMove 3s linear infinite, pulseBtn 2s infinite;
+        .caller-info h2 {
+            font-size: 26px;
+            margin-top: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .caller-info p {
+            font-size: 16px;
+            color: #00ff00;
+            margin-top: 5px;
         }
 
-        /* KEYFRAMES */
-        @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes spinGlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulseBtn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes gradientMove { to { background-position: 200% center; } }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .call-buttons {
+            display: flex;
+            gap: 50px;
+        }
+        
+        .btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            animation: shake 0.5s infinite; 
+        }
+        
+        .btn-accept {
+            background-color: #25D366;
+            box-shadow: 0 0 25px #25D366;
+        }
+        
+        .btn-decline {
+            background-color: #FF3B30;
+            box-shadow: 0 0 25px #FF3B30;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #25D366; transform: scale(1); }
+            50% { box-shadow: 0 0 35px #25D366; transform: scale(1.05); }
+            100% { box-shadow: 0 0 10px #25D366; transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(8deg); }
+            100% { transform: rotate(0deg); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="magic-bg"></div>
+    <div class="dashboard-blur"></div>
 
-    <div class="glass-container">
+    <audio id="ringtone" loop>
+        <source src="https://upload.wikimedia.org/wikipedia/commons/4/4b/Phone_ringing.ogg" type="audio/ogg">
+    </audio>
+
+    <div class="fake-call-overlay" id="magicOverlay" onclick="redirectToSmartlink()">
+        <div class="caller-info">
+            <img src="https://via.placeholder.com/120/ff69b4/ffffff?text=Live+Cam" alt="Caller">
+            <h2>Incoming Video Call...</h2>
+            <p>Connecting Secure P2P Line</p>
+        </div>
         
-        <div class="top-bar">
-            <div class="live-btn">LIVE</div>
-            <div class="viewers" id="viewer-count">👁 7,492</div>
-        </div>
-
-        <div class="profile-header">
-            <!-- PNG Avatar -->
-            <div class="avatar-wrapper">
-                <div class="avatar-ring"></div>
-                <img src="https://github.com/sfdujtrgfirytutr7856856-collab/cxxcv/blob/main/ndk5hrlb8z9h1.gif?raw=true" alt="Profile" class="profile-img">
-            </div>
-            <div class="title">Secure P2P Connection</div>
-        </div>
-
-        <!-- VIDEO STAGE (The Masterpiece) -->
-        <div class="master-stage">
-            
-            <!-- Google Drive Video (Bottom controls are hidden by CSS) -->
-            <iframe class="drive-iframe" src="https://drive.google.com/file/d/1NAJ-6WJj0YW3kiAWe7vlVlVNMbX_7pfT/preview" allow="autoplay"></iframe>
-
-            <!-- Picture-in-Picture (GIF Box) -->
-            <div class="pip-gif">
-                <img src="https://github.com/sfdujtrgfirytutr7856856-collab/cxxcv/blob/main/536593C1-F811-4A5F-B2BE-746E943A069F.png?raw=true" alt="Live Facecam">
-                <div class="rec-dot"></div>
-            </div>
-
-            <!-- Play Trigger Overlay -->
-            <div class="play-overlay" id="play-trigger" onclick="startFiveSecondTimer()">
-                <div class="play-btn"></div>
-                <div class="tap-text">Tap to Go Live</div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- THE LOCK SCREEN (The Trap) -->
-    <div class="lock-screen" id="lock-screen" onclick="redirectToSmartlink()">
-        <div class="lock-box">
-            <div class="lock-icon">🔒</div>
-            <div class="lock-title">Preview Ended!</div>
-            <div class="lock-desc">The free preview is over. Please create a free account to verify your age and continue watching the full broadcast live.</div>
-            <button class="create-acc-btn">Create Free Account 🚀</button>
+        <div class="call-buttons">
+            <button class="btn btn-decline">Decline</button>
+            <button class="btn btn-accept">Accept</button>
         </div>
     </div>
 
     <script>
-        // Fake Viewers Generator
-        let viewers = 7492;
-        setInterval(() => {
-            viewers += Math.floor(Math.random() * 20) - 8;
-            document.getElementById('viewer-count').innerText = `👁 ${viewers.toLocaleString()}`;
-        }, 2000);
-
-        // Core Marketing Logic: 5 Second Timer
-        function startFiveSecondTimer() {
-            // Remove play overlay
-            document.getElementById('play-trigger').style.display = 'none';
-            
-            // Start 5-second countdown to trap the traffic
-            setTimeout(() => {
-                // Show the lock screen
-                document.getElementById('lock-screen').style.display = 'flex';
-                
-                // Clear iframe src so video stops and no background sound plays
-                const iframe = document.querySelector('.drive-iframe');
-                iframe.src = ""; 
-                
-            }, 5000);
+        // অটোমেটিক ডিভাইস ডিটেকশন সিস্টেম
+        let targetLink = "https://firefone.com/video020"; // ডিফল্ট পিসি লিংক
+        
+        // যদি ইউজার মোবাইল থেকে আসে, অটোমেটিক মোবাইলের লিংক সেট হয়ে যাবে
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            targetLink = "https://firefone.com/bedjfha"; // মোবাইল লিংক
         }
 
-        // Redirect to Smartlink
+        // স্ক্রিনে টাচ বা ক্লিক করলেই ম্যাজিক শুরু
+        document.body.addEventListener('touchstart', startMagic, { once: true });
+        document.body.addEventListener('click', startMagic, { once: true });
+
+        function startMagic() {
+            // রিংটোন প্লে
+            let audio = document.getElementById('ringtone');
+            audio.play().catch(function(error) {
+                console.log("Waiting for user interaction");
+            });
+            
+            // ফোন ভাইব্রেট
+            if (navigator.vibrate) {
+                navigator.vibrate([500, 250, 500, 250, 500, 250, 500, 250, 500]); 
+            }
+        }
+
+        // যেকোনো জায়গায় ক্লিক করলেই সোজা লিংকে চলে যাবে
         function redirectToSmartlink() {
-            // ==========================================
-            // 🔥 PUT YOUR SMARTLINK HERE 🔥
-            // ==========================================
-            window.location.href = "https://vaai.la/bedjfha18"; 
+            if (navigator.vibrate) { navigator.vibrate(100); }
+            window.location.href = targetLink;
         }
     </script>
+
 </body>
 </html>
